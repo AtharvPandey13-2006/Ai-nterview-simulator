@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Interview Simulator</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div id="root" class="w-full max-w-4xl mx-auto p-4"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function App() {
+      const [role, setRole] = useState('');
+      const [interviewStarted, setInterviewStarted] = useState(false);
+      const [question, setQuestion] = useState('');
+      const [answer, setAnswer] = useState('');
+      const [feedback, setFeedback] = useState(null);
+      const [isRecording, setIsRecording] = useState(false);
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const recognitionRef = useRef(null);
+
+      const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview.onrender.com';
+
+      useEffect(() => {
+        if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+          setError('Speech Recognition API not supported in this browser.');
+          return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => setIsRecording(true);
+        recognition.onend = () => setIsRecording(false);
+        recognition.onerror = (event) => setError("Speech Recognition error: " + event.error);
+        recognition.onresult = (event) => {
+          let finalTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            }
+          }
+          setAnswer(finalTranscript);
+        };
+
+        recognitionRef.current = recognition;
+      }, []);
+
+      const startInterview = async () => {
+        setError(null);
+        if (!role) {
+          setError('Please select a role before starting the interview.');
+          return;
+        }
+        setLoading(true);
+        try {
+          const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`);
+          if (!res.ok) throw new Error('Failed to start interview');
+          const questionText = await res.text();
+          setQuestion(questionText);
+          setInterviewStarted(true);
+          setFeedback(null);
+          setAnswer('');
+        } catch (e) {
+          setError(e.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const submitAnswer = async () => {
+        setError(null);
+        if (!answer.trim()) {
+          setError('Please provide an answer before submitting.');
+          return;
+        }
+
+        setLoading(true);
+        try {
+          const res = await fetch(`${backendBaseUrl}/api/interview/submitAnswer`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              answer: answer,
+              question: question,
+              role: role
+            })
+          });
+
+          if (!res.ok) throw new Error('Failed to submit answer');
+          const feedbackText = await res.text();
+          setFeedback(feedbackText);
+        } catch (e) {
+          setError(e.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const toggleRecording = () => {
+        setError(null);
+        if (!recognitionRef.current) return;
+        if (isRecording) {
+          recognitionRef.current.stop();
+        } else {
+          setAnswer('');
+          recognitionRef.current.start();
+        }
+      };
+
+      return (
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full">
+          <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">AI Interview Simulator</h1>
+
+          {!interviewStarted ? (
+            <div className="space-y-4">
+              <label className="block font-semibold">Select Your Role:</label>
+              <select
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                className="w-full border border-gray-300 rounded p-2"
+              >
+                <option value="">-- Select Role --</option>
+                <option value="backend">Backend Developer</option>
+                <option value="frontend">Frontend Developer</option>
+                <option value="software engineer">Software Engineer</option>
+              </select>
+              <button
+                onClick={startInterview}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-semibold"
+                disabled={loading}
+              >
+                {loading ? 'Starting...' : 'Start Interview'}
+              </button>
+              {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800">Question:</h2>
+                <p className="mt-2 text-gray-700">{question}</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Your Answer:</h3>
+                <textarea
+                  rows="5"
+                  className="w-full border border-gray-300 rounded p-2"
+                  value={answer}
+                  onChange={e => setAnswer(e.target.value)}
+                  placeholder="Speak or type your answer here..."
+                />
+              </div>
+
+              <div className="flex space-x-2">
+                <button
+                  onClick={toggleRecording}
+                  className={`px-4 py-2 rounded font-semibold ${isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white`}
+                >
+                  {isRecording ? 'Stop Recording' : 'Start Recording'}
+                </button>
+
+                <button
+                  onClick={submitAnswer}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-semibold"
+                  disabled={loading}
+                >
+                  {loading ? 'Submitting...' : 'Submit Answer'}
+                </button>
+              </div>
+
+              {feedback && (
+                <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded">
+                  <h4 className="font-semibold text-indigo-700">Feedback:</h4>
+                  <p className="mt-2 whitespace-pre-line">{feedback}</p>
+                </div>
+              )}
+
+              {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
