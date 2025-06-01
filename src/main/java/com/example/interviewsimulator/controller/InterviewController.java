@@ -6,6 +6,7 @@ import com.example.interviewsimulator.service.GeminiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "https://atharvpandey13-2006.github.io")
 @RestController
 @RequestMapping("/api/interview")
 @CrossOrigin(origins = "http://127.0.0.1:5500") // allow your frontend origin
