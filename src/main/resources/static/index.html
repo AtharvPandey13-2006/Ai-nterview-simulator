@@ -180,11 +180,20 @@
               </div>
 
               {feedback && (
-                <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded">
-                  <h4 className="font-semibold text-indigo-700">Feedback:</h4>
-                  <p className="mt-2 whitespace-pre-line">{feedback}</p>
-                </div>
-              )}
+  <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded space-y-4">
+    <div>
+      <h4 className="font-semibold text-indigo-700">Feedback:</h4>
+      <p className="mt-2 whitespace-pre-line">{feedback}</p>
+    </div>
+    <button
+      onClick={getNextQuestion}
+      className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold"
+      disabled={loading}
+    >
+      {loading ? 'Loading...' : 'Next'}
+    </button>
+  </div>
+)}
 
               {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
             </div>
