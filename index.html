@@ -25,6 +25,22 @@
       const [error, setError] = useState(null);
       const [loading, setLoading] = useState(false);
       const recognitionRef = useRef(null);
+      const getNextQuestion = async () => {
+        setError(null);
+        setFeedback(null);
+        setAnswer('');
+        setLoading(true);
+        try {
+          const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}`);
+          if (!res.ok) throw new Error('Failed to fetch next question');
+          const nextQ = await res.text();
+          setQuestion(nextQ);
+        } catch (e) {
+          setError(e.message);
+        } finally {
+          setLoading(false);
+        }
+      };
 
       const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-4.onrender.com';
 
@@ -179,12 +195,22 @@
                 </button>
               </div>
 
-              {feedback && (
-                <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded">
-                  <h4 className="font-semibold text-indigo-700">Feedback:</h4>
-                  <p className="mt-2 whitespace-pre-line">{feedback}</p>
-                </div>
-              )}
+             {feedback && (
+  <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded space-y-4">
+    <div>
+      <h4 className="font-semibold text-indigo-700">Feedback:</h4>
+      <p className="mt-2 whitespace-pre-line">{feedback}</p>
+    </div>
+    <button
+      onClick={getNextQuestion}
+      className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold"
+      disabled={loading}
+    >
+      {loading ? 'Loading...' : 'Next'}
+    </button>
+  </div>
+)}
+
 
               {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
             </div>
