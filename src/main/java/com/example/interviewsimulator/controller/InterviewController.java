@@ -6,7 +6,7 @@ import com.example.interviewsimulator.service.GeminiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = {"https://atharvpandey13-2006.github.io" , "http://127.0.0.1:5500"} )  // allow your frontend origin
+@CrossOrigin(origins = {"https://atharvpandey13-2006.github.io" , "http://127.0.0.1:5501"} )  // allow your frontend origin
 @RestController
 @RequestMapping("/api/interview")
 public class InterviewController {
@@ -48,7 +48,7 @@ public String submitAnswer(@RequestBody AnswerRequest request) {
     return htmlResponse;
 }
 @GetMapping("/nextQuestion")
-public String getNextQuestion(@RequestParam String role, @RequestParam int questionIndex) {
+public String getNextQuestion(@RequestParam String role, @RequestParam(defaultValue = "0") int questionIndex) {
     String prompt = "You are conducting a mock interview for the role of " + role + ". "
             + "Ask the " + (questionIndex + 1) + "th question in the interview. "
             + "ONLY QUESTION, NOT A SINGLE EXTRA WORD.";
