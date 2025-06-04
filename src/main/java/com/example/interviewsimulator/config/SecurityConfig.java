@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
@@ -19,11 +20,15 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth
-                .defaultSuccessUrl("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/", true)  // redirect to frontend after login
+                .loginPage("/login.html") // Explicitly tell Spring what the login page is
+                .defaultSuccessUrl("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview", true)
             )
             .logout(logout -> logout
                 .logoutSuccessUrl("/login.html")
                 .permitAll()
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html")) // Handle /login?error
             );
 
         return http.build();
