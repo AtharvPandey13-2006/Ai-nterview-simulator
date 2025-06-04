@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth
-                .loginPage("/login.html") // Explicitly tell Spring what the login page is
+                .loginPage("/login/") // Explicitly tell Spring what the login page is
                 .defaultSuccessUrl("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview", true)
             )
             .logout(logout -> logout
