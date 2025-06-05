@@ -12,7 +12,7 @@ function App() {
   const recognitionRef = useRef(null);
   const [questionIndex, setQuestionIndex] = useState(0);
 
-  const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-5.onrender.com';
+  const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-3.onrender.com';
 
   const getNextQuestion = async () => {
     setError(null);
