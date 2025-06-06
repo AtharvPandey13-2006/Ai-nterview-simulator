@@ -15,22 +15,26 @@ function App() {
   const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-3.onrender.com';
 
   const getNextQuestion = async () => {
-    setError(null);
-    setFeedback(null);
-    setAnswer('');
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`);
-      if (!res.ok) throw new Error('Failed to fetch next question');
-      const nextQ = await res.text();
-      setQuestion(nextQ);
-      setQuestionIndex(prev => prev + 1);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setError(null);
+  setFeedback(null);
+  setAnswer('');
+  setLoading(true);
+  try {
+    const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
+      method: 'GET',
+      credentials: 'include' // 🔥 Include cookies
+    });
+    if (!res.ok) throw new Error('Failed to fetch next question');
+    const nextQ = await res.text();
+    setQuestion(nextQ);
+    setQuestionIndex(prev => prev + 1);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
@@ -61,52 +65,57 @@ function App() {
   }, []);
 
   const startInterview = async () => {
-    setError(null);
-    setQuestionIndex(1);
-    if (!role) {
-      setError('Please select a role before starting the interview.');
-      return;
-    }
+  setError(null);
+  setQuestionIndex(1);
+  if (!role) {
+    setError('Please select a role before starting the interview.');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`);
-      if (!res.ok) throw new Error('Failed to start interview');
-      const questionText = await res.text();
-      setQuestion(questionText);
-      setInterviewStarted(true);
-      setFeedback(null);
-      setAnswer('');
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`, {
+      method: 'GET',
+      credentials: 'include' // 🔥 Include cookies for session
+    });
+    if (!res.ok) throw new Error('Failed to start interview');
+    const questionText = await res.text();
+    setQuestion(questionText);
+    setInterviewStarted(true);
+    setFeedback(null);
+    setAnswer('');
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const submitAnswer = async () => {
-    setError(null);
-    if (!answer.trim()) {
-      setError('Please provide an answer before submitting.');
-      return;
-    }
+  setError(null);
+  if (!answer.trim()) {
+    setError('Please provide an answer before submitting.');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/submitAnswer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answer, question, role })
-      });
-      if (!res.ok) throw new Error('Failed to submit answer');
-      const feedbackText = await res.text();
-      setFeedback(feedbackText);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const res = await fetch(`${backendBaseUrl}/api/interview/submitAnswer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // 🔥 Include session cookie
+      body: JSON.stringify({ answer, question, role })
+    });
+    if (!res.ok) throw new Error('Failed to submit answer');
+    const feedbackText = await res.text();
+    setFeedback(feedbackText);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const toggleRecording = () => {
     setError(null);
