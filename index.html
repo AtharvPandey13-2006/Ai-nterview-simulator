@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login | AI Interview Simulator</title>
+  <title>Login | AI Interview Simulator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -224,6 +225,17 @@
     
 
   </div>
-  
+)}
+
+
+              {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>
