@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -27,12 +26,12 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login.html", "/oauth2/**", "/css/**", "/js/**", "/assets/**").permitAll()
+                .requestMatchers("/", "/login.html", "/oauth2/**", "/css/**", "/js/**", "/assets/**", "/redirect-after-login").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth
-                .defaultSuccessUrl("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview", true)
+                .defaultSuccessUrl("/redirect-after-login", true)
                 .failureUrl("/login.html")
             )
             .logout(logout -> logout
@@ -40,7 +39,12 @@ public class SecurityConfig {
                 .permitAll()
             )
             .exceptionHandling(exception -> exception
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login.html"))
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(401);
+                    response.setHeader("Access-Control-Allow-Origin", "https://atharvpandey13-2006.github.io");
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
+                    response.getWriter().write("Unauthorized");
+                })
             );
 
         return http.build();
@@ -61,14 +65,14 @@ public class SecurityConfig {
 
     @Bean
     public CookieSameSiteSupplier cookieSameSiteSupplier() {
-        return CookieSameSiteSupplier.ofNone(); // 🔥 Enables cross-origin cookie
+        return CookieSameSiteSupplier.ofNone(); // For cross-origin session
     }
 
     @Bean
     public ServletContextInitializer secureCookieInitializer() {
         return servletContext -> {
             SessionCookieConfig sessionCookieConfig = servletContext.getSessionCookieConfig();
-            sessionCookieConfig.setSecure(true); // 🔒 Cookie sent only over HTTPS
+            sessionCookieConfig.setSecure(true); // Send only over HTTPS
         };
     }
 }
