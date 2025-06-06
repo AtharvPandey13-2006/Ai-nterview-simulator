@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth -> oauth
-                .defaultSuccessUrl("/redirect-after-login", true)
+                .defaultSuccessUrl("/api/interview/redirect-after-login", true)
                 .failureUrl("/login.html")
             )
             .logout(logout -> logout
