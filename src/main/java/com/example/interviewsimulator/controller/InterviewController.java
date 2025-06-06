@@ -3,6 +3,11 @@ package com.example.interviewsimulator.controller;
 import com.example.interviewsimulator.model.AnswerRequest;
 import com.example.interviewsimulator.model.QuestionRequest;
 import com.example.interviewsimulator.service.GeminiService;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +60,14 @@ public String getNextQuestion(@RequestParam String role, @RequestParam(defaultVa
 
     return geminiService.askGemini(prompt);
 }
+
+@GetMapping("/redirect-after-login")
+public void redirectAfterLogin(HttpServletResponse response) throws IOException {
+    response.setHeader("Access-Control-Allow-Origin", "https://atharvpandey13-2006.github.io");
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+    response.sendRedirect("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview");
+}
+
 
 
 }
