@@ -12,6 +12,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+import jakarta.servlet.SessionCookieConfig;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -19,9 +23,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors() // ✅ enable CORS filter
+            .cors()
             .and()
-            .csrf().disable() // ✅ disable CSRF for APIs (safe since using OAuth2)
+            .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/login.html", "/oauth2/**", "/css/**", "/js/**", "/assets/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
@@ -42,17 +46,29 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ✅ Required CORS configuration for GitHub Pages + credentials
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("https://atharvpandey13-2006.github.io"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true); // ✅ very important
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    @Bean
+    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofNone(); // 🔥 Enables cross-origin cookie
+    }
+
+    @Bean
+    public ServletContextInitializer secureCookieInitializer() {
+        return servletContext -> {
+            SessionCookieConfig sessionCookieConfig = servletContext.getSessionCookieConfig();
+            sessionCookieConfig.setSecure(true); // 🔒 Cookie sent only over HTTPS
+        };
     }
 }
