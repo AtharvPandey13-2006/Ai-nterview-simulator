@@ -65,8 +65,7 @@ public String getNextQuestion(@RequestParam String role, @RequestParam(defaultVa
 public void redirectAfterLogin(HttpServletResponse response) throws IOException {
     response.setHeader("Access-Control-Allow-Origin", "https://atharvpandey13-2006.github.io");
     response.setHeader("Access-Control-Allow-Credentials", "true");
-   // response.sendRedirect("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview");
-    response.sendRedirect("https://atharvpandey13-2006.github.io/Zentra/src/main/resources/static/zentra.html");
+    response.sendRedirect("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview");
 }
 
 
