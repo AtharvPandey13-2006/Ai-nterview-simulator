@@ -9,10 +9,32 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [questionIndex, setQuestionIndex] = useState(0);
   const recognitionRef = useRef(null);
+  const [questionIndex, setQuestionIndex] = useState(0);
 
   const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-z01i.onrender.com';
+
+  const getNextQuestion = async () => {
+  setError(null);
+  setFeedback(null);
+  setAnswer('');
+  setLoading(true);
+  try {
+    const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
+      method: 'GET',
+      credentials: 'include' // 🔥 Include cookies
+    });
+    if (!res.ok) throw new Error('Failed to fetch next question');
+    const nextQ = await res.text();
+    setQuestion(nextQ);
+    setQuestionIndex(prev => prev + 1);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
@@ -43,77 +65,57 @@ function App() {
   }, []);
 
   const startInterview = async () => {
-    setError(null);
-    setQuestionIndex(1);
-    if (!role) {
-      setError('Please select a role before starting the interview.');
-      return;
-    }
+  setError(null);
+  setQuestionIndex(1);
+  if (!role) {
+    setError('Please select a role before starting the interview.');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      if (!res.ok) throw new Error('Failed to start interview');
-      const questionText = await res.text();
-      setQuestion(questionText);
-      setInterviewStarted(true);
-      setFeedback(null);
-      setAnswer('');
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getNextQuestion = async () => {
-    setError(null);
+  setLoading(true);
+  try {
+    const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`, {
+      method: 'GET',
+      credentials: 'include' // 🔥 Include cookies for session
+    });
+    if (!res.ok) throw new Error('Failed to start interview');
+    const questionText = await res.text();
+    setQuestion(questionText);
+    setInterviewStarted(true);
     setFeedback(null);
     setAnswer('');
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      if (!res.ok) throw new Error('Failed to fetch next question');
-      const nextQ = await res.text();
-      setQuestion(nextQ);
-      setQuestionIndex(prev => prev + 1);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const submitAnswer = async () => {
-    setError(null);
-    if (!answer.trim()) {
-      setError('Please provide an answer before submitting.');
-      return;
-    }
+  setError(null);
+  if (!answer.trim()) {
+    setError('Please provide an answer before submitting.');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/submitAnswer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ answer, question, role })
-      });
-      if (!res.ok) throw new Error('Failed to submit answer');
-      const feedbackText = await res.text();
-      setFeedback(feedbackText);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const res = await fetch(`${backendBaseUrl}/api/interview/submitAnswer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // 🔥 Include session cookie
+      body: JSON.stringify({ answer, question, role })
+    });
+    if (!res.ok) throw new Error('Failed to submit answer');
+    const feedbackText = await res.text();
+    setFeedback(feedbackText);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const toggleRecording = () => {
     setError(null);
@@ -127,41 +129,40 @@ function App() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-2xl w-full max-w-4xl mx-auto">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-indigo-700">🎙️ AI Interview Simulator</h1>
+    <div className="bg-white p-8 rounded-lg shadow-lg w-full">
+      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">AI Interview Simulator</h1>
 
       {!interviewStarted ? (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {['Frontend Developer', 'Backend Developer', 'Software Engineer'].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRole(r)}
-              className={`p-6 rounded-lg border-2 ${role === r ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200'} hover:shadow-md transition`}
-            >
-              <h2 className="text-lg font-semibold">{r}</h2>
-              <p className="text-sm mt-2 text-gray-500">Simulate questions for {r}</p>
-            </button>
-          ))}
-
+        <div className="space-y-4">
+          <label className="block font-semibold">Select Your Role:</label>
+          <select
+            value={role}
+            onChange={e => setRole(e.target.value)}
+            className="w-full border border-gray-300 rounded p-2"
+          >
+            <option value="">-- Select Role --</option>
+            <option value="backend">Backend Developer</option>
+            <option value="frontend">Frontend Developer</option>
+            <option value="software engineer">Software Engineer</option>
+          </select>
           <button
             onClick={startInterview}
-            className="col-span-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded font-semibold mt-6"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-semibold"
             disabled={loading}
           >
-            {loading ? 'Loading...' : '🚀 Start Interview'}
+            {loading ? 'Starting...' : 'Start Interview'}
           </button>
-
-          {error && <p className="col-span-full mt-2 text-red-600 font-semibold">{error}</p>}
+          {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-indigo-50 border-l-4 border-indigo-600 p-4 rounded">
-            <h2 className="text-xl font-semibold text-indigo-700">Question:</h2>
-            <p className="mt-2 text-gray-800">{question}</p>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Question:</h2>
+            <p className="mt-2 text-gray-700">{question}</p>
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">Your Answer:</label>
+            <h3 className="text-lg font-semibold mb-1">Your Answer:</h3>
             <textarea
               rows="5"
               className="w-full border border-gray-300 rounded p-2"
@@ -171,39 +172,41 @@ function App() {
             />
           </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex space-x-2">
             <button
               onClick={toggleRecording}
-              className={`px-5 py-2 rounded font-semibold ${isRecording ? 'bg-red-600' : 'bg-green-600'} text-white hover:opacity-90`}
+              className={`px-4 py-2 rounded font-semibold ${isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white`}
             >
-              🎤 {isRecording ? 'Stop Recording' : 'Start Recording'}
-            </button>
-
-            <button
-              onClick={submitAnswer}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-5 rounded font-semibold"
-              disabled={loading}
-            >
-              {loading ? 'Submitting...' : '📤 Submit Answer'}
+              {isRecording ? 'Stop Recording' : 'Start Recording'}
             </button>
 
             <button
               onClick={getNextQuestion}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-5 rounded font-semibold"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold"
               disabled={loading}
             >
-              {loading ? 'Loading...' : '➡️ Next Question'}
+              {loading ? 'Loading...' : 'Next'}
+            </button>
+
+            <button
+              onClick={submitAnswer}
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-semibold"
+              disabled={loading}
+            >
+              {loading ? 'Submitting...' : 'Submit Answer'}
             </button>
           </div>
 
           {feedback && (
-            <div className="p-4 bg-green-50 border-l-4 border-green-600 rounded mt-4">
-              <h4 className="font-semibold text-green-700">AI Feedback:</h4>
-              <p className="mt-2 whitespace-pre-line text-gray-700">{feedback}</p>
+            <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded space-y-4">
+              <div>
+                <h4 className="font-semibold text-indigo-700">Feedback:</h4>
+                <p className="mt-2 whitespace-pre-line">{feedback}</p>
+              </div>
             </div>
           )}
 
-          {error && <p className="text-red-600 font-semibold">{error}</p>}
+          {error && <p className="mt-2 text-red-600 font-semibold">{error}</p>}
         </div>
       )}
     </div>
