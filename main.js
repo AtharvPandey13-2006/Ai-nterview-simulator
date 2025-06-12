@@ -52,7 +52,10 @@ function App() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`);
+      const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`, {
+        method: 'GET',
+        credentials: 'include'
+      });
       if (!res.ok) throw new Error('Failed to start interview');
       const questionText = await res.text();
       setQuestion(questionText);
