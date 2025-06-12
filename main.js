@@ -52,10 +52,7 @@ function App() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`, {
-        method: 'GET',
-        credentials: 'include'
-      });
+      const res = await fetch(`${backendBaseUrl}/api/interview/startInterview?role=${encodeURIComponent(role)}`);
       if (!res.ok) throw new Error('Failed to start interview');
       const questionText = await res.text();
       setQuestion(questionText);
@@ -75,10 +72,7 @@ function App() {
     setAnswer('');
     setLoading(true);
     try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
-        method: 'GET',
-        credentials: 'include'
-      });
+      const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`);
       if (!res.ok) throw new Error('Failed to fetch next question');
       const nextQ = await res.text();
       setQuestion(nextQ);
@@ -102,7 +96,6 @@ function App() {
       const res = await fetch(`${backendBaseUrl}/api/interview/submitAnswer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ answer, question, role })
       });
       if (!res.ok) throw new Error('Failed to submit answer');
@@ -153,13 +146,69 @@ function App() {
 
           {error && <p className="col-span-full mt-2 text-red-600 font-semibold">{error}</p>}
         </div>
-      ) : (
-        <div className="space-y-6">
-          <div className="bg-indigo-50 border-l-4 border-indigo-600 p-4 rounded">
-            <h2 className="text-xl font-semibold text-indigo-700">Question:</h2>
-            <p className="mt-2 text-gray-800">{question}</p>
+      ) : questionIndex > 5 ? (
+        <div className="text-center space-y-6">
+          <h2 className="text-3xl font-bold text-indigo-700">🏁 Interview Completed</h2>
+          <div className="bg-indigo-100 p-6 rounded-xl shadow-md max-w-md mx-auto space-y-4">
+            <p className="text-lg"><strong>Role:</strong> {role}</p>
+            <p className="text-lg"><strong>Total Questions:</strong> {questionIndex}</p>
+            <p className="text-lg"><strong>Questions Answered:</strong> {questionIndex}</p>
+            <p className="text-lg"><strong>Mock Score:</strong> <span className="text-green-600 font-semibold text-xl">8.5 / 10</span></p>
           </div>
 
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button
+              className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-5 rounded font-semibold"
+              onClick={() => alert("Coming soon: PDF Download")}
+            >
+              📄 Download Feedback
+            </button>
+
+            <button
+              className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-5 rounded font-semibold"
+              onClick={() => {
+                setInterviewStarted(false);
+                setQuestion('');
+                setFeedback(null);
+                setAnswer('');
+                setQuestionIndex(0);
+              }}
+            >
+              🔄 Restart Interview
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {/* Chat UI */}
+          <div className="space-y-4">
+            <div className="flex items-start gap-2">
+              <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" className="w-10 h-10 rounded-full" />
+              <div className="bg-indigo-100 p-3 rounded-xl max-w-xl shadow">
+                <p className="text-gray-800">{question}</p>
+              </div>
+            </div>
+
+            {answer && (
+              <div className="flex items-start justify-end gap-2">
+                <div className="bg-green-100 p-3 rounded-xl max-w-xl shadow">
+                  <p className="text-gray-800 whitespace-pre-line">{answer}</p>
+                </div>
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" className="w-10 h-10 rounded-full" />
+              </div>
+            )}
+
+            {feedback && (
+              <div className="flex items-start gap-2">
+                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" className="w-10 h-10 rounded-full" />
+                <div className="bg-yellow-100 p-3 rounded-xl max-w-xl shadow">
+                  <p className="text-gray-800 whitespace-pre-line">{feedback}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Textarea + buttons */}
           <div>
             <label className="block mb-1 font-semibold text-gray-700">Your Answer:</label>
             <textarea
@@ -195,13 +244,6 @@ function App() {
               {loading ? 'Loading...' : '➡️ Next Question'}
             </button>
           </div>
-
-          {feedback && (
-            <div className="p-4 bg-green-50 border-l-4 border-green-600 rounded mt-4">
-              <h4 className="font-semibold text-green-700">AI Feedback:</h4>
-              <p className="mt-2 whitespace-pre-line text-gray-700">{feedback}</p>
-            </div>
-          )}
 
           {error && <p className="text-red-600 font-semibold">{error}</p>}
         </div>
