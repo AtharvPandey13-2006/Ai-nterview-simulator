@@ -12,7 +12,13 @@ function App() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const recognitionRef = useRef(null);
   const [showScorecard, setShowScorecard] = useState(false);
-  const [scoreData, setScoreData] = useState(null); // { score, strengths, weaknesses }
+  //const [scoreData, setScoreData] = useState(null); // { score, strengths, weaknesses }
+  const [scoreData, setScoreData] = useState({
+  score: 0,
+  strengths: [],
+  weaknesses: []
+});
+
 
   const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com';
 
@@ -175,14 +181,15 @@ function App() {
           <div className="mb-4">
             <h3 className="font-semibold text-green-700">✔️ Strengths</h3>
             <ul className="list-disc list-inside text-gray-700">
-              {scoreData.strengths.map((s, i) => <li key={i}>{s}</li>)}
+              {Array.isArray(scoreData?.strengths) && scoreData.strengths.map((s, i) => <li key={i}>{s}</li>)}
+
             </ul>
           </div>
 
           <div className="mb-4">
             <h3 className="font-semibold text-red-700">⚠️ Areas to Improve</h3>
             <ul className="list-disc list-inside text-gray-700">
-              {scoreData.weaknesses.map((w, i) => <li key={i}>{w}</li>)}
+              {Array.isArray(scoreData?.weaknesses) && scoreData.weaknesses.map((w, i) => <li key={i}>{w}</li>)}
             </ul>
           </div>
 
