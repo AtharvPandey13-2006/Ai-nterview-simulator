@@ -11,6 +11,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const recognitionRef = useRef(null);
+  const [showScorecard, setShowScorecard] = useState(false);
+const [scoreData, setScoreData] = useState(null); // { score, strengths, weaknesses }
+
 
   const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com';
 
@@ -69,26 +72,59 @@ function App() {
     }
   };
 
+  // const getNextQuestion = async () => {
+  //   setError(null);
+  //   setFeedback(null);
+  //   setAnswer('');
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
+  //       method: 'GET',
+  //       credentials: 'include'
+  //     });
+  //     if (!res.ok) throw new Error('Failed to fetch next question');
+  //     const nextQ = await res.text();
+  //     setQuestion(nextQ);
+  //     setQuestionIndex(prev => prev + 1);
+  //   } catch (e) {
+  //     setError(e.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const getNextQuestion = async () => {
-    setError(null);
-    setFeedback(null);
-    setAnswer('');
-    setLoading(true);
-    try {
-      const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
-        method: 'GET',
+  setError(null);
+  setFeedback(null);
+  setAnswer('');
+  setLoading(true);
+
+  try {
+    if (questionIndex >= 5) { // 🛑 Check before making the request
+      setShowScorecard(true);
+      const res = await fetch(`${backendBaseUrl}/api/interview/score`, {
         credentials: 'include'
       });
-      if (!res.ok) throw new Error('Failed to fetch next question');
-      const nextQ = await res.text();
-      setQuestion(nextQ);
-      setQuestionIndex(prev => prev + 1);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
+      const data = await res.json(); // { score, strengths, weaknesses }
+      setScoreData(data);
+      return;
     }
-  };
+
+    const res = await fetch(`${backendBaseUrl}/api/interview/nextQuestion?role=${encodeURIComponent(role)}&questionIndex=${questionIndex}`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch next question');
+    const nextQ = await res.text();
+    setQuestion(nextQ);
+    setQuestionIndex(prev => prev + 1);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const submitAnswer = async () => {
     setError(null);
