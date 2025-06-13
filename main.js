@@ -90,6 +90,7 @@ function App() {
           credentials: 'include'
         });
         const data = await res.json();
+        console.log("SCORE DATA RECEIVED:", data);
         setScoreData(data);
         return;
       }
@@ -189,7 +190,7 @@ function App() {
           <div className="mb-4">
             <h3 className="font-semibold text-red-700">⚠️ Areas to Improve</h3>
             <ul className="list-disc list-inside text-gray-700">
-              {Array.isArray(scoreData?.weaknesses) && scoreData.weaknesses.map((w, i) => <li key={i}>{w}</li>)}
+              {(scoreData?.weaknesses || []).map((w, i) => <li key={i}>{w}</li>)}
             </ul>
           </div>
 
