@@ -181,7 +181,7 @@ function App() {
           <div className="mb-4">
             <h3 className="font-semibold text-green-700">✔️ Strengths</h3>
             <ul className="list-disc list-inside text-gray-700">
-              {Array.isArray(scoreData?.strengths) && scoreData.strengths.map((s, i) => <li key={i}>{s}</li>)}
+              {(scoreData?.strengths || []).map((s, i) => <li key={i}>{s}</li>)}
 
             </ul>
           </div>
