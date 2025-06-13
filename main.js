@@ -12,7 +12,7 @@ function App() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const recognitionRef = useRef(null);
 
-  const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-z01i.onrender.com';
+  const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com';
 
   useEffect(() => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
