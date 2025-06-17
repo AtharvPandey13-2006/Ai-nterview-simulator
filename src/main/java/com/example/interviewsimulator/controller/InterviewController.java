@@ -41,36 +41,38 @@ public class InterviewController {
         String prompt = "Start a mock interview for the role of a " + role + ". Ask a question.ONLY QUESTION NOT A SINGLE EXTRA WORD";
         return geminiService.askGemini(prompt);
     }
+@PostMapping(value = "/submitAnswer", produces = "application/json")
+@ResponseBody
+public GeminiResponse submitAnswer(@RequestBody AnswerRequest request, HttpSession session) {
+    String prompt = "You are acting as an AI interviewer for the role of " + request.getRole() + ".\n"
+            + "Here is the question I asked: \"" + request.getQuestion() + "\"\n"
+            + "Here is the candidate's answer: \"" + request.getAnswer() + "\"\n"
+            + "Please evaluate this answer and give:\n"
+            + "1. A score out of 10\n"
+            + "2. A list of strengths\n"
+            + "3. A list of weaknesses\n"
+            + "4. A brief feedback paragraph\n"
+            + "Return this in JSON format like: { \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
 
-    @PostMapping(value = "/submitAnswer", produces = "text/html")
-    public String submitAnswer(@RequestBody AnswerRequest request, HttpSession session) {
-        String prompt = "You are acting as an AI interviewer for the role of " + request.getRole() + ".\n"
-                + "Here is the question I asked: \"" + request.getQuestion() + "\"\n"
-                + "Here is the candidate's answer: \"" + request.getAnswer() + "\"\n"
-                + "Please evaluate this answer and give:\n"
-                + "1. A score out of 10\n"
-                + "2. A list of strengths\n"
-                + "3. A list of weaknesses\n"
-                + "4. A brief feedback paragraph\n"
-                + "Return this in JSON format like: { \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
+    String raw = geminiService.askGemini(prompt);
 
-        String raw = geminiService.askGemini(prompt);
-
-        ObjectMapper mapper = new ObjectMapper();
-        GeminiResponse geminiResponse;
-        try {
-            geminiResponse = mapper.readValue(raw, GeminiResponse.class);
-        } catch (IOException e) {
-            geminiResponse = new GeminiResponse(5, List.of(), List.of(), "AI returned invalid format.");
-        }
-
-        List<GeminiResponse> feedbackList = (List<GeminiResponse>) session.getAttribute("feedbackList");
-        if (feedbackList == null) feedbackList = new ArrayList<>();
-        feedbackList.add(geminiResponse);
-        session.setAttribute("feedbackList", feedbackList);
-
-        return geminiResponse.getFeedback();
+    ObjectMapper mapper = new ObjectMapper();
+    GeminiResponse geminiResponse;
+    try {
+        geminiResponse = mapper.readValue(raw, GeminiResponse.class);
+    } catch (IOException e) {
+        geminiResponse = new GeminiResponse(5, List.of(), List.of(), "AI returned invalid format.");
     }
+
+    List<GeminiResponse> feedbackList = (List<GeminiResponse>) session.getAttribute("feedbackList");
+    if (feedbackList == null) feedbackList = new ArrayList<>();
+    feedbackList.add(geminiResponse);
+    session.setAttribute("feedbackList", feedbackList);
+
+    return geminiResponse; // ✅ returning full JSON object, not just String
+}
+
+    
 
     @GetMapping("/nextQuestion")
     public String getNextQuestion(@RequestParam String role, @RequestParam(defaultValue = "0") int questionIndex) {
