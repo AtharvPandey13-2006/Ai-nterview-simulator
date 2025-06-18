@@ -127,13 +127,26 @@ function App() {
         body: JSON.stringify({ answer, question, role })
       });
       if (!res.ok) throw new Error('Failed to submit answer');
-      const feedbackText = await res.text();
-      setFeedback(feedbackText);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
+      const data = await res.json(); // ✅ FIXED
+  setFeedback(data.feedback);    // ✅ feedback paragraph only
+  setScoreData({
+    score: data.score,
+    strengths: data.strengths,
+    weaknesses: data.weaknesses
+  });                            // ✅ full evaluation
+} catch (e) {
+  setError(e.message);
+} finally {
+  setLoading(false);
+}
+
+    //   const feedbackText = await res.text();
+    //   setFeedback(feedbackText);
+    // } catch (e) {
+    //   setError(e.message);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const toggleRecording = () => {
