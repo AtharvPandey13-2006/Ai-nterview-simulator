@@ -44,15 +44,28 @@ public class InterviewController {
 @PostMapping(value = "/submitAnswer", produces = "application/json")
 @ResponseBody
 public GeminiResponse submitAnswer(@RequestBody AnswerRequest request, HttpSession session) {
-    String prompt = "You are acting as an AI interviewer for the role of " + request.getRole() + ".\n"
-            + "Here is the question I asked: \"" + request.getQuestion() + "\"\n"
-            + "Here is the candidate's answer: \"" + request.getAnswer() + "\"\n"
-            + "Please evaluate this answer and give:\n"
-            + "1. A score out of 10\n"
-            + "2. A list of strengths\n"
-            + "3. A list of weaknesses\n"
-            + "4. A brief feedback paragraph\n"
-            + "Return this in JSON format like: { \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
+    String prompt = 
+    "You must ONLY return a valid JSON object. Do not explain anything. Do not wrap it in triple backticks or markdown.\n\n"
+    + "You are acting as an AI interviewer for the role of " + request.getRole() + ".\n"
+    + "Here is the question I asked: \"" + request.getQuestion() + "\"\n"
+    + "Here is the candidate's answer: \"" + request.getAnswer() + "\"\n"
+    + "Please evaluate this answer and give:\n"
+    + "1. A score out of 10\n"
+    + "2. A list of strengths\n"
+    + "3. A list of weaknesses\n"
+    + "4. A brief feedback paragraph\n"
+    + "Return this in JSON format like:\n"
+    + "{ \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
+
+    // String prompt = "You are acting as an AI interviewer for the role of " + request.getRole() + ".\n"
+    //         + "Here is the question I asked: \"" + request.getQuestion() + "\"\n"
+    //         + "Here is the candidate's answer: \"" + request.getAnswer() + "\"\n"
+    //         + "Please evaluate this answer and give:\n"
+    //         + "1. A score out of 10\n"
+    //         + "2. A list of strengths\n"
+    //         + "3. A list of weaknesses\n"
+    //         + "4. A brief feedback paragraph\n"
+    //         + "Return this in JSON format like: { \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
 
     String raw = geminiService.askGemini(prompt);
     System.out.println("AI RAW RESPONSE: " + raw);
