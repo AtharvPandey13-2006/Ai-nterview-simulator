@@ -55,6 +55,7 @@ public GeminiResponse submitAnswer(@RequestBody AnswerRequest request, HttpSessi
             + "Return this in JSON format like: { \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
 
     String raw = geminiService.askGemini(prompt);
+    System.out.println("AI RAW RESPONSE: " + raw);
 
     ObjectMapper mapper = new ObjectMapper();
     GeminiResponse geminiResponse;
