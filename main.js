@@ -190,7 +190,7 @@ function App() {
       ) : showScorecard && scoreData ? (
         <div className="mt-6 p-6 rounded-xl bg-gray-50 border-l-4 border-indigo-600 shadow">
           <h2 className="text-2xl font-bold text-indigo-700 mb-4">🏆 Interview Summary</h2>
-          <p className="text-xl mb-2">💯 Score: <span className="font-bold">{scoreData.score}/{scoreData.maxcore}</span></p>
+          <p className="text-xl mb-2">💯 Score: <span className="font-bold">{scoreData.score}/{scoreData.maxScore}</span></p>
 
           <div className="mb-4">
             <h3 className="font-semibold text-green-700">✔️ Strengths</h3>
