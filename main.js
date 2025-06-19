@@ -147,7 +147,7 @@ function App() {
   //   } finally {
   //     setLoading(false);
   //   }
-  // };
+   };
 
   const toggleRecording = () => {
     setError(null);
