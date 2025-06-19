@@ -67,7 +67,17 @@ public GeminiResponse submitAnswer(@RequestBody AnswerRequest request, HttpSessi
     //         + "4. A brief feedback paragraph\n"
     //         + "Return this in JSON format like: { \"score\": 8, \"strengths\": [\"Clear explanation\"], \"weaknesses\": [\"Too short\"], \"feedback\": \"You explained clearly but missed some edge cases.\" }";
 
-    String raw = geminiService.askGemini(prompt);
+    String raw = geminiService.askGemini(prompt).trim();
+
+// Remove triple backticks if present
+if (raw.startsWith("```")) {
+    int startIndex = raw.indexOf("{");
+    int endIndex = raw.lastIndexOf("}");
+    if (startIndex != -1 && endIndex != -1) {
+        raw = raw.substring(startIndex, endIndex + 1);
+    }
+}
+
     System.out.println("AI RAW RESPONSE: " + raw);
 
     ObjectMapper mapper = new ObjectMapper();
