@@ -257,33 +257,9 @@ function App() {
 
           {feedback && (
             <div className="p-4 bg-green-50 border-l-4 border-green-600 rounded mt-4">
-  <h4 className="font-semibold text-green-700">AI Feedback:</h4>
-
-  {/* Strengths Section */}
-  <div className="mb-4 mt-2">
-    <h3 className="font-semibold text-green-700">✔️ Strengths</h3>
-    <ul className="list-disc list-inside text-gray-700">
-      {(scoreData?.strengths || []).map((s, i) => <li key={i}>{s}</li>)}
-    </ul>
-  </div>
-
-  {/* Weaknesses Section */}
-  <div className="mb-4">
-    <h3 className="font-semibold text-red-700">⚠️ Areas to Improve</h3>
-    <ul className="list-disc list-inside text-gray-700">
-      {(scoreData?.weaknesses || []).map((w, i) => <li key={i}>{w}</li>)}
-    </ul>
-  </div>
-
-  {/* Overall Feedback Section */}
-  <div>
-    <h3 className="font-semibold text-gray-800">📝 Overall Feedback</h3>
-    <p className="mt-1 whitespace-pre-line text-gray-700">
-      {feedback}
-    </p>
-  </div>
-</div>
-
+              <h4 className="font-semibold text-green-700">AI Feedback:</h4>
+              <p className="mt-2 whitespace-pre-line text-gray-700">{scoreData.feedback}</p>
+            </div>
           )}
 
           {error && <p className="text-red-600 font-semibold">{error}</p>}
