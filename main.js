@@ -255,12 +255,13 @@ function App() {
             </button>
           </div>
 
-          {feedback && (
-            <div className="p-4 bg-green-50 border-l-4 border-green-600 rounded mt-4">
-              <h4 className="font-semibold text-green-700">AI Feedback:</h4>
-              <p className="mt-2 whitespace-pre-line text-gray-700">{scoreData.feedback}</p>
-            </div>
-          )}
+          {scoreData?.feedback && (
+  <div className="p-4 bg-green-50 border-l-4 border-green-600 rounded mt-4">
+    <h4 className="font-semibold text-green-700">AI Feedback:</h4>
+    <p className="mt-2 whitespace-pre-line text-gray-700">{scoreData.feedback}</p>
+  </div>
+)}
+
 
           {error && <p className="text-red-600 font-semibold">{error}</p>}
         </div>
