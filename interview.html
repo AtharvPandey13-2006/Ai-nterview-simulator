@@ -13,10 +13,35 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-  <div id="root" class="w-full max-w-4xl mx-auto p-4"></div>
+<body class="bg-gray-100 min-h-screen overflow-x-hidden">
 
-  <!-- Link to external JS file -->
+  <!-- Background Image with Overlay -->
+  <div class="fixed inset-0 z-0">
+    <img src="image.png" alt="Background" class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="relative z-10 bg-indigo-900 bg-opacity-90 text-white text-sm py-2 px-4 flex justify-between items-center shadow">
+    <div>📍 India | 🌐 AI Mock Interview Platform</div>
+    <div>📞 Contact: +91-9876543210</div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="relative z-10 px-6 py-24 text-center max-w-5xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-xl">
+      Welcome to <span class="text-yellow-400">AI Interview Simulator</span>
+    </h1>
+    <p class="mt-4 text-lg text-gray-200 font-medium">
+      Practice DSA, System Design & HR Interviews — Powered by AI 🚀
+    </p>
+
+  </section>
+
+  <!-- React Root Mount -->
+  <div id="root" class="relative z-10 w-full max-w-4xl mx-auto px-4 mb-10"></div>
+
+  <!-- React App -->
   <script type="text/babel" src="main.js"></script>
 </body>
 </html>
