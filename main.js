@@ -140,8 +140,10 @@ function App() {
 //   setLoading(false);
 // }
 
-      const feedbackText = await res.text();
-      setFeedback(feedbackText);
+      const data = await res.json();
+setFeedback(data.feedback); // Optional: if you still use it elsewhere
+setScoreData(data);         // This sets score, strengths, weaknesses, and feedback all in one
+
     } catch (e) {
       setError(e.message);
     } finally {
