@@ -35,13 +35,13 @@ public class SecurityConfig {
                 .failureUrl("/login.html")
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("https://atharvpandey13-2006.github.io")
+                .logoutSuccessUrl("https://golden-swan-a56b79.netlify.app")
                 .permitAll()
             )
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(401);
-                    response.setHeader("Access-Control-Allow-Origin", "https://atharvpandey13-2006.github.io");
+                    response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
                     response.setHeader("Access-Control-Allow-Credentials", "true");
                     response.getWriter().write("Unauthorized");
                 })
@@ -53,7 +53,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("https://atharvpandey13-2006.github.io"));
+        config.setAllowedOrigins(Arrays.asList("https://golden-swan-a56b79.netlify.app"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
