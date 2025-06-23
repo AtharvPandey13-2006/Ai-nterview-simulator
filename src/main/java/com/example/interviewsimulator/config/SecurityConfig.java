@@ -1,5 +1,6 @@
 package com.example.interviewsimulator.config;
 
+import com.example.interviewsimulator.config.OAuth2LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
@@ -18,6 +20,9 @@ import jakarta.servlet.SessionCookieConfig;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private OAuth2LoginSuccessHandler successHandler; // ✅ Inject custom success handler
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,6 +37,7 @@ public class SecurityConfig {
             )
             .oauth2Login(oauth -> oauth
                 .defaultSuccessUrl("/api/interview/redirect-after-login", true)
+                .successHandler(successHandler) // ✅ Save login info in MongoDB
                 .failureUrl("/login.html")
             )
             .logout(logout -> logout
