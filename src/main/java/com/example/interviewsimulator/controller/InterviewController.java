@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = {"https://atharvpandey13-2006.github.io", "http://127.0.0.1:5501"})
+@CrossOrigin(origins = {"https://atharvpandey13-2006.github.io", "http://127.0.0.1:5501","https://golden-swan-a56b79.netlify.app"})
 @RestController
 @RequestMapping("/api/interview")
 public class InterviewController {
@@ -47,7 +47,7 @@ public GeminiResponse submitAnswer(@RequestBody AnswerRequest request, HttpSessi
     String prompt = 
     "You must ONLY return a valid JSON object. Do not explain anything. Do not wrap it in triple backticks or markdown.\n\n"
     + "You are acting as an AI interviewer for the role of " + request.getRole() + ".\n"
-    + "Here is the question I asked: \"" + request.getQuestion() + "\"\n"
+    + "Ask behavioural and role based question . Here is the question I asked: \"" + request.getQuestion() + "\"\n"
     + "Here is the candidate's answer: \"" + request.getAnswer() + "\"\n"
     + "Please evaluate this answer and give:\n"
     + "1. A score out of 10\n"
@@ -136,8 +136,8 @@ if (raw.startsWith("```")) {
 
     @GetMapping("/redirect-after-login")
     public void redirectAfterLogin(HttpServletResponse response) throws IOException {
-        response.setHeader("Access-Control-Allow-Origin", "https://atharvpandey13-2006.github.io");
+        response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.sendRedirect("https://atharvpandey13-2006.github.io/AtharvPandey13-2006.github.io-interview/interview");
+        response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview");
     }
 }
