@@ -33,10 +33,12 @@ import org.springframework.web.bind.annotation.*;
 public class InterviewController {
 
     @Autowired
-    private GeminiService geminiService;
+    private UserStatsService userStatsService;
 
     @Autowired
-private UserStatsService userStatsService;
+    private GeminiService geminiService;
+
+    
 
     @PostMapping("/ask")
     public String askAI(@RequestBody QuestionRequest request) {
