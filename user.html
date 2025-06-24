@@ -52,7 +52,9 @@
     const email = sessionStorage.getItem("userEmail") || "test@example.com"; 
     const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
 
-    fetch(`${apiBase}/${email}`)
+    fetch(`${apiBase}/${email}`,{
+  credentials: "include"
+})
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch user stats");
         return res.json();
