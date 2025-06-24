@@ -21,6 +21,7 @@ import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {"https://atharvpandey13-2006.github.io", "http://127.0.0.1:5501","https://golden-swan-a56b79.netlify.app"})
@@ -134,10 +135,30 @@ if (raw.startsWith("```")) {
         return ResponseEntity.ok(response);
     }
 
+    // @GetMapping("/redirect-after-login")
+    // public void redirectAfterLogin(HttpServletResponse response) throws IOException {
+    //     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
+    //     response.setHeader("Access-Control-Allow-Credentials", "true");
+    //     response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview");
+    // }
+
     @GetMapping("/redirect-after-login")
-    public void redirectAfterLogin(HttpServletResponse response) throws IOException {
-        response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview");
-    }
+public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
+    String email = token.getPrincipal().getAttribute("email");
+
+    response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+
+    String html = "<!DOCTYPE html>" +
+                  "<html><head><meta charset='UTF-8'><title>Redirecting...</title></head><body>" +
+                  "<script>" +
+                  "sessionStorage.setItem('userEmail', '" + email + "');" +
+                  "window.location.href = 'https://golden-swan-a56b79.netlify.app/interview';" +
+                  "</script>" +
+                  "</body></html>";
+
+    response.setContentType("text/html");
+    response.getWriter().write(html);
+}
+
 }
