@@ -53,6 +53,7 @@
     const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
 
     fetch(`${apiBase}/${email}`,{
+         method: "GET",
   credentials: "include"
 })
       .then(res => {
