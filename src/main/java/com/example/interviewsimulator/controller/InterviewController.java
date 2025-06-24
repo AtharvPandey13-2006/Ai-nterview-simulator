@@ -2,13 +2,16 @@ package com.example.interviewsimulator.controller;
 
 import com.example.interviewsimulator.model.AnswerRequest;
 import com.example.interviewsimulator.model.QuestionRequest;
+import com.example.interviewsimulator.model.UserStats;
 import com.example.interviewsimulator.service.GeminiService;
+import com.example.interviewsimulator.service.UserStatsService;
 import com.example.interviewsimulator.model.GeminiResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import com.example.interviewsimulator.model.User;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,6 +34,9 @@ public class InterviewController {
 
     @Autowired
     private GeminiService geminiService;
+
+    @Autowired
+private UserStatsService userStatsService;
 
     @PostMapping("/ask")
     public String askAI(@RequestBody QuestionRequest request) {
@@ -93,6 +99,24 @@ if (raw.startsWith("```")) {
     if (feedbackList == null) feedbackList = new ArrayList<>();
     feedbackList.add(geminiResponse);
     session.setAttribute("feedbackList", feedbackList);
+
+    
+    // After storing feedback in session
+User user = (User) session.getAttribute("user"); // assuming you store logged-in user in session
+if (user != null) {
+    UserStats.InterviewRecord record = new UserStats.InterviewRecord();
+    record.setQuestion(request.getQuestion());
+    record.setAnswer(request.getAnswer());
+    record.setScore(geminiResponse.getScore());
+    // record.setStrengths(geminiResponse.getStrengths());
+    // record.setWeaknesses(geminiResponse.getWeaknesses());
+    // record.setFeedback(geminiResponse.getFeedback());
+    // record.setTimestamp(System.currentTimeMillis());
+
+   userStatsService.updateInterviewStats(user.getEmail(), record);
+
+}
+
 
     return geminiResponse; // ✅ returning full JSON object, not just String
 }
