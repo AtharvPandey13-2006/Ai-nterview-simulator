@@ -32,6 +32,10 @@ function App() {
         sessionStorage.setItem("userEmail", data.email);
         console.log("✅ Logged in as:", data.email);
       }
+       if (data?.name) {
+        sessionStorage.setItem("userName", data.name);
+        console.log("👤 Name:", data.name);
+      }
     })
     .catch(err => {
       console.error("⚠️ Could not fetch user email from session:", err);
