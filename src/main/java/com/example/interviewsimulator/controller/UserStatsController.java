@@ -18,7 +18,12 @@ public class UserStatsController {
     public ResponseEntity<UserStats> getStats(@PathVariable String email) {
         UserStats stats = service.findByEmail(email);
         if (stats == null) {
-            return ResponseEntity.notFound().build(); // Return 404 if user not found
+             // Auto-create new user stats
+        stats = new UserStats();
+        stats.setEmail(email);
+        stats.setName("Unknown User");
+        stats = service.save(stats);
+            // return ResponseEntity.notFound().build(); // Return 404 if user not found
         }
         return ResponseEntity.ok(stats);
     }
