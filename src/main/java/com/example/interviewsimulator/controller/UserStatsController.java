@@ -5,6 +5,7 @@ import com.example.interviewsimulator.service.UserStatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 @RestController
 @RequestMapping("/api/user")
@@ -15,7 +16,7 @@ public class UserStatsController {
     private UserStatsService service;
 
     @GetMapping("/{email}")
-    public ResponseEntity<UserStats> getStats(@PathVariable String email) {
+    public ResponseEntity<UserStats> getStats(@PathVariable String email, OAuth2AuthenticationToken authentication) {
         UserStats stats = service.findByEmail(email);
         if (stats == null) {
              // Auto-create new user stats
@@ -23,6 +24,15 @@ public class UserStatsController {
         stats.setEmail(email);
         stats.setName("Unknown User");
         stats = service.save(stats);
+
+        if (stats == null) {
+    stats = new UserStats();
+    stats.setEmail(email);
+    String name = authentication.getPrincipal().getAttribute("name");
+    stats.setName(name != null ? name : "Unknown User");
+    stats = service.save(stats);
+}
+
             // return ResponseEntity.notFound().build(); // Return 404 if user not found
         }
         return ResponseEntity.ok(stats);
