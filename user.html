@@ -48,6 +48,12 @@
   </div>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+const userEmail = urlParams.get("email");
+if (userEmail) {
+  sessionStorage.setItem("userEmail", userEmail);
+}
+
     // You can dynamically assign this using localStorage or sessionStorage after Google OAuth
     const email = sessionStorage.getItem("userEmail") || "test@example.com"; 
     const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
