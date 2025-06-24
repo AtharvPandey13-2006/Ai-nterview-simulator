@@ -142,6 +142,17 @@ if (raw.startsWith("```")) {
     //     response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview");
     // }
 
+    @GetMapping("/me")
+public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authentication) {
+    Map<String, String> map = new HashMap<>();
+    String name = authentication.getPrincipal().getAttribute("name");
+    String email = authentication.getPrincipal().getAttribute("email");
+    map.put("name", name);
+    map.put("email", email);
+    return map;
+}
+
+
     @GetMapping("/redirect-after-login")
 public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
     String email = token.getPrincipal().getAttribute("email");
