@@ -20,7 +20,24 @@ function App() {
 });
 
 
+
   const backendBaseUrl = 'https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com';
+  useEffect(() => {
+  fetch(`${backendBaseUrl}/api/user/me`, {
+    credentials: 'include'
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data?.email) {
+        sessionStorage.setItem("userEmail", data.email);
+        console.log("✅ Logged in as:", data.email);
+      }
+    })
+    .catch(err => {
+      console.error("⚠️ Could not fetch user email from session:", err);
+    });
+}, []);
+
 
   useEffect(() => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
