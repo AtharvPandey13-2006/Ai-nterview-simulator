@@ -189,7 +189,7 @@ setScoreData(data);         // This sets score, strengths, weaknesses, and feedb
 
       {!interviewStarted ? (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {['Frontend Developer', 'Backend Developer', 'Software Engineer'].map((r) => (
+          {['Frontend Developer', 'Backend Developer', 'Software Engineer', 'HR','Marketing Assistant', 'Digital Strategist'].map((r) => (
             <button
               key={r}
               onClick={() => setRole(r)}
