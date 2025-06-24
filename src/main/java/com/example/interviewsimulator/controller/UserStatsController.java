@@ -3,6 +3,7 @@ package com.example.interviewsimulator.controller;
 import com.example.interviewsimulator.model.UserStats;
 import com.example.interviewsimulator.service.UserStatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,17 +15,23 @@ public class UserStatsController {
     private UserStatsService service;
 
     @GetMapping("/{email}")
-    public UserStats getStats(@PathVariable String email) {
-        return service.findByEmail(email);
+    public ResponseEntity<UserStats> getStats(@PathVariable String email) {
+        UserStats stats = service.findByEmail(email);
+        if (stats == null) {
+            return ResponseEntity.notFound().build(); // Return 404 if user not found
+        }
+        return ResponseEntity.ok(stats);
     }
 
     @PostMapping("/")
-    public UserStats saveStats(@RequestBody UserStats stats) {
-        return service.save(stats);
+    public ResponseEntity<UserStats> saveStats(@RequestBody UserStats stats) {
+        UserStats saved = service.save(stats);
+        return ResponseEntity.ok(saved);
     }
 
     @PostMapping("/{email}/addInterview")
-    public void addInterview(@PathVariable String email, @RequestBody UserStats.InterviewRecord record) {
+    public ResponseEntity<Void> addInterview(@PathVariable String email, @RequestBody UserStats.InterviewRecord record) {
         service.updateInterviewStats(email, record);
+        return ResponseEntity.ok().build();
     }
 }
