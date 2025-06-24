@@ -30,22 +30,10 @@
 
     <!-- Past Interviews -->
     <div class="bg-white rounded-xl shadow p-6 mb-6">
-      <h2 class="text-xl font-semibold mb-4">📜 Past Interviews</h2>
+      <h2 class="text-xl font-semibold mb-4">📜 Past Interviews Score</h2>
       <ul id="interviews-list" class="space-y-2 text-sm">Loading interview records...</ul>
     </div>
 
-    <!-- Add Interview -->
-    <div class="bg-white rounded-xl shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">➕ Add Interview Record</h2>
-      <form id="add-interview-form" class="space-y-4">
-        <input type="text" id="question" placeholder="Question" class="w-full p-2 border rounded" required />
-        <input type="text" id="answer" placeholder="Answer" class="w-full p-2 border rounded" required />
-        <input type="number" id="score" placeholder="Score out of 10" min="0" max="10" class="w-full p-2 border rounded" required />
-        <input type="date" id="date" class="w-full p-2 border rounded" required />
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
-      </form>
-    </div>
-  </div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -116,33 +104,68 @@ if (userEmail) {
         console.error(err);
       });
 
-    document.getElementById("add-interview-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const record = {
-        question: document.getElementById("question").value,
-        answer: document.getElementById("answer").value,
-        score: parseFloat(document.getElementById("score").value),
-        date: document.getElementById("date").value,
-      };
+  
 
-      fetch(`${apiBase}/${email}/addInterview`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(record),
-      })
-        .then(res => {
-          if (res.ok) {
-            alert("Interview added!");
-            location.reload();
-          } else {
-            alert("Failed to add interview.");
+    // Prepare data for Chart.js
+if (data.pastInterviews && data.pastInterviews.length > 0) {
+  const scores = data.pastInterviews.map(i => i.score);
+  const labels = data.pastInterviews.map(i => {
+    const d = new Date(i.date);
+    return `${d.getDate()}/${d.getMonth() + 1}`; // Format: DD/MM
+  });
+
+  const ctx = document.getElementById('scoreChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Interview Score',
+        data: scores,
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          suggestedMin: 0,
+          suggestedMax: 10,
+          title: {
+            display: true,
+            text: 'Score (out of 10)'
           }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Server error. Try again later.");
-        });
-    });
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Date'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        }
+      }
+    }
+  });
+}
+
   </script>
+  <!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Score Chart -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <h2 class="text-xl font-semibold mb-4">📊 Score Progress Over Time</h2>
+  <canvas id="scoreChart" height="100"></canvas>
+</div>
+
 </body>
 </html>
