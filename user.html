@@ -52,15 +52,19 @@
     const email = sessionStorage.getItem("userEmail") || "test@example.com"; 
     const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
 
-    fetch(`${apiBase}/${email}`,{
-         method: "GET",
+    fetch(`${apiBase}/${email}`, {
+  method: "GET",
   credentials: "include"
 })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch user stats");
-        return res.json();
-      })
-      .then(data => {
+  .then(res => {
+    if (!res.ok) throw new Error("Failed to fetch user stats");
+    return res.text();
+  })
+  .then(text => {
+    if (!text) throw new Error("Empty response");
+    const data = JSON.parse(text);
+
+      
         document.getElementById("user-name").textContent = data.name || "N/A";
         document.getElementById("user-email").textContent = data.email;
         document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
