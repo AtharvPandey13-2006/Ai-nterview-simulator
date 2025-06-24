@@ -2,6 +2,9 @@ package com.example.interviewsimulator.service;
 
 import com.example.interviewsimulator.model.UserStats;
 import com.example.interviewsimulator.repository.UserStatsRepository;
+
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +25,16 @@ public class UserStatsService {
     public void updateInterviewStats(String email, UserStats.InterviewRecord record) {
         UserStats stats = repository.findByEmail(email);
         if (stats != null) {
-            stats.getPastInterviews().add(record);
-            repository.save(stats);
+             if (stats.getPastInterviews() == null) {
+            stats.setPastInterviews(new ArrayList<>());
         }
+
+        stats.getPastInterviews().add(record);
+        System.out.println("Adding interview to: " + email);
+System.out.println("Score: " + record.getScore());
+System.out.println("Total records: " + stats.getPastInterviews().size());
+
+        repository.save(stats);
+    }
     }
 }
