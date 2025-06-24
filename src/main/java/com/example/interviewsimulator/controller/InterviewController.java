@@ -8,6 +8,8 @@ import com.example.interviewsimulator.service.UserStatsService;
 import com.example.interviewsimulator.model.GeminiResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.interviewsimulator.repository.InterviewResponseRepository;
+import com.example.interviewsimulator.model.InterviewResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -31,6 +33,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/interview")
 public class InterviewController {
+    @Autowired
+    private InterviewResponseRepository interviewResponseRepository;
+
 
     @Autowired
     private UserStatsService userStatsService;
@@ -101,6 +106,22 @@ if (raw.startsWith("```")) {
     if (feedbackList == null) feedbackList = new ArrayList<>();
     feedbackList.add(geminiResponse);
     session.setAttribute("feedbackList", feedbackList);
+    Object userObj = session.getAttribute("user");
+String userEmail = (userObj instanceof User) ? ((User) userObj).getEmail() : "anonymous";
+
+InterviewResponse responseObject = new InterviewResponse();
+responseObject.setUserEmail(userEmail);
+responseObject.setRole(request.getRole());
+responseObject.setQuestion(request.getQuestion());
+responseObject.setAnswer(request.getAnswer());
+responseObject.setScore(geminiResponse.getScore());
+responseObject.setStrengths(geminiResponse.getStrengths());
+responseObject.setWeaknesses(geminiResponse.getWeaknesses());
+responseObject.setFeedback(geminiResponse.getFeedback());
+
+interviewResponseRepository.save(responseObject);
+
+
 
     
     // After storing feedback in session
