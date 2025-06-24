@@ -1,244 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Trainer | CodePulse</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --neon-blue: #00f2ff;
-            --electric-red: #ff2a6d;
-            --deep-purple: #5e0eff;
-            --dark-bg: #0d0c1d;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark-bg);
-            color: white;
-            overflow-x: hidden;
-        }
-        .title-font {
-            font-family: 'Orbitron', sans-serif;
-        }
-        .neon-glow {
-            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 242, 255, 0.5);
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, var(--deep-purple) 0%, var(--electric-red) 100%);
-        }
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 242, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
-        }
-        .typewriter {
-            border-right: 3px solid var(--neon-blue);
-            white-space: nowrap;
-            overflow: hidden;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-        }
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--neon-blue) }
-        }
-        .chat-bubble {
-            max-width: 80%;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            position: relative;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .user-bubble {
-            background: rgba(255, 42, 109, 0.15);
-            border: 1px solid var(--electric-red);
-            align-self: flex-end;
-            border-bottom-right-radius: 0;
-        }
-        .ai-bubble {
-            background: rgba(0, 242, 255, 0.1);
-            border: 1px solid var(--neon-blue);
-            border-bottom-left-radius: 0;
-        }
-        .glow-button {
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
-        }
-        .glow-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.8);
-        }
-        .terminal-code {
-            background: rgba(0, 0, 0, 0.7);
-            border-left: 4px solid var(--neon-blue);
-            font-family: monospace;
-            padding: 1rem;
-            border-radius: 0 8px 8px 0;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard | Interview Trainer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen">
-    <!-- Animated Background Elements -->
-    <div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full bg-black opacity-90"></div>
-        <div class="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiMxMTEiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')]"></div>
-        <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-gradient-radial from-electric-red to-transparent opacity-20 blur-3xl"></div>
-        <div class="absolute top-3/4 right-1/4 w-64 h-64 rounded-full bg-gradient-radial from-neon-blue to-transparent opacity-20 blur-3xl"></div>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4 text-center">👤 User Dashboard</h1>
+
+    <!-- Profile Info -->
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-2">Profile</h2>
+      <p><strong>Name:</strong> <span id="user-name">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
+      <p><strong>Avg. Response Time:</strong> <span id="user-response-time">--</span> sec</p>
+      <p><strong>Progress:</strong></p>
+      <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+        <div id="progress-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+      </div>
     </div>
 
-    <!-- Header -->
-    <header class="gradient-bg text-white py-6 px-4 shadow-lg">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <div class="w-12 h-12 rounded-full bg-neon-blue flex items-center justify-center mr-4 pulse-animation">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-dark-bg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
+    <!-- Skills Chart -->
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Skill Levels</h2>
+      <div id="skills-container">Loading skills...</div>
+    </div>
+
+    <!-- Past Interviews -->
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">📜 Past Interviews</h2>
+      <ul id="interviews-list" class="space-y-2 text-sm">Loading interview records...</ul>
+    </div>
+
+    <!-- Add Interview -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">➕ Add Interview Record</h2>
+      <form id="add-interview-form" class="space-y-4">
+        <input type="text" id="question" placeholder="Question" class="w-full p-2 border rounded" required />
+        <input type="text" id="answer" placeholder="Answer" class="w-full p-2 border rounded" required />
+        <input type="number" id="score" placeholder="Score out of 10" min="0" max="10" class="w-full p-2 border rounded" required />
+        <input type="date" id="date" class="w-full p-2 border rounded" required />
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // You can dynamically assign this using localStorage or sessionStorage after Google OAuth
+    const email = sessionStorage.getItem("userEmail") || "test@example.com"; 
+    const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
+
+    fetch(`${apiBase}/${email}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch user stats");
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById("user-name").textContent = data.name || "N/A";
+        document.getElementById("user-email").textContent = data.email;
+        document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
+        document.getElementById("progress-bar").style.width = (data.progress || 0) + "%";
+
+        // Skills
+        const skillContainer = document.getElementById("skills-container");
+        skillContainer.innerHTML = "";
+        if (data.skillLevels && Object.keys(data.skillLevels).length > 0) {
+          Object.entries(data.skillLevels).forEach(([skill, level]) => {
+            skillContainer.innerHTML += `
+              <div class="mb-2">
+                <span class="font-medium">${skill}</span>
+                <div class="w-full bg-gray-200 h-3 rounded">
+                  <div class="bg-green-500 h-3 rounded" style="width: ${level}%"></div>
                 </div>
-                <h1 class="title-font text-3xl neon-glow">Code<span class="text-electric-red">Pulse</span></h1>
-            </div>
-            <nav>
-                <ul class="flex space-x-8">
-                    <li><a href="index.html" class="hover:text-neon-blue transition">Home</a></li>
-                    <li><a href="#" class="hover:text-neon-blue transition">Topics</a></li>
-                    <li><a href="#" class="hover:text-neon-blue transition">Progress</a></li>
-                    <li><a href="#" class="hover:text-neon-blue transition">Settings</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+              </div>`;
+          });
+        } else {
+          skillContainer.textContent = "No skills recorded.";
+        }
 
-    <main class="container mx-auto px-4 py-8 relative z-10">
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Left Panel -->
-            <div class="lg:w-1/4 bg-black bg-opacity-70 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-800">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="title-font text-xl text-neon-blue">Interview Profile</h2>
-                    <span class="px-3 py-1 bg-electric-red text-xs rounded-full">PRO</span>
-                </div>
-                
-                <div class="mb-8">
-                    <div class="flex justify-center mb-4">
-                        <div class="relative">
-                            <div class="w-32 h-32 rounded-full border-4 border-neon-blue p-1">
-                                <div class="w-full h-full rounded-full bg-gray-800 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="absolute -bottom-2 -right-2 bg-deep-purple rounded-full p-2 border-2 border-dark-bg">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 class="text-center text-xl font-semibold mb-1">Interview Candidate</h3>
-                    <p class="text-center text-gray-400 text-sm">Software Engineer</p>
-                </div>
+        // Past interviews
+        const interviewList = document.getElementById("interviews-list");
+        interviewList.innerHTML = "";
+        if (data.pastInterviews && data.pastInterviews.length > 0) {
+          data.pastInterviews.reverse().forEach((intv, idx) => {
+            interviewList.innerHTML += `
+              <li class="bg-gray-50 p-4 rounded shadow-sm">
+                <p><strong>Q:</strong> ${intv.question}</p>
+                <p><strong>A:</strong> ${intv.answer}</p>
+                <p><strong>Score:</strong> ${intv.score}/10 | <strong>Date:</strong> ${intv.date}</p>
+              </li>`;
+          });
+        } else {
+          interviewList.innerHTML = "<li>No past interviews found.</li>";
+        }
+      })
+      .catch(err => {
+        document.getElementById("user-name").textContent = "Error loading user";
+        document.getElementById("skills-container").textContent = "Failed to load skills.";
+        document.getElementById("interviews-list").textContent = "Failed to load interviews.";
+        console.error(err);
+      });
 
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-electric-red mb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Progress Tracker
-                        </h4>
-                        <div class="h-3 bg-gray-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-electric-red to-neon-blue rounded-full" style="width: 65%"></div>
-                        </div>
-                        <p class="text-right text-xs mt-1 text-gray-400">65% Complete</p>
-                    </div>
+    document.getElementById("add-interview-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const record = {
+        question: document.getElementById("question").value,
+        answer: document.getElementById("answer").value,
+        score: parseFloat(document.getElementById("score").value),
+        date: document.getElementById("date").value,
+      };
 
-                    <div>
-                        <h4 class="text-neon-blue mb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Avg. Response Time
-                        </h4>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold">3.2 <span class="text-sm text-gray-400">sec</span></span>
-                            <span class="text-xs px-2 py-1 bg-green-900 text-green-400 rounded-full">+12%</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="text-white mb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                            </svg>
-                            Skills Level
-                        </h4>
-                        <div class="space-y-2">
-                            <div class="flex items-center">
-                                <span class="w-24 text-gray-400">JavaScript</span>
-                                <div class="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-neon-blue rounded-full" style="width: 75%"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="w-24 text-gray-400">Algorithms</span>
-                                <div class="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-electric-red rounded-full" style="width: 60%"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="w-24 text-gray-400">System Design</span>
-                                <div class="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-deep-purple rounded-full" style="width: 45%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Interview Panel -->
-            <div class="flex-1 bg-black bg-opacity-70 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-gray-800">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="title-font text-2xl text-neon-blue">AI Interview Simulator</h2>
-                    <div>
-                        <button id="newSessionBtn" class="glow-button bg-gradient-to-r from-electric-red to-deep-purple text-white px-6 py-2 rounded-full font-semibold flex items-center hover:from-deep-purple hover:to-electric-red transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            New Session
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Interview Session -->
-                <div id="interviewContainer" class="bg-gray-900 rounded-lg p-4 min-h-[500px] max-h-[600px] overflow-y-auto border border-gray-800 mb-6">
-                    <div id="chatArea" class="flex flex-col space-y-4">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-10 h-10 rounded-full bg-deep-purple flex items-center justify-center shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                </svg>
-                            </div>
-                            <div class="chat-bubble ai-bubble animate_animated animate_fadeIn">
-                                <p class="typewriter">Welcome to CodePulse Interview Simulator! I'm your AI interviewer. Ready to begin your practice session?</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- User Input Area -->
-                <div class="relative">
-                    <textarea id="userInput" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-4 pr-16 text-white focus:outline-none focus:ring-2 focus:ring-neon-blue focus:border-transparent" placeholder="Type your answer here..." rows="3"></textarea>
-                    <button id="sendBtn" class="absolute right-4 bottom-4 bg
+      fetch(`${apiBase}/${email}/addInterview`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(record),
+      })
+        .then(res => {
+          if (res.ok) {
+            alert("Interview added!");
+            location.reload();
+          } else {
+            alert("Failed to add interview.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Server error. Try again later.");
+        });
+    });
+  </script>
+</body>
+</html>
