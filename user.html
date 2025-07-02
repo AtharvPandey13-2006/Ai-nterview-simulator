@@ -43,12 +43,17 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const userEmailFromURL = urlParams.get("email");
+  const userNameFromURL = urlParams.get("name");
 
   if (userEmailFromURL) {
     sessionStorage.setItem("userEmail", userEmailFromURL);
   }
+  if (userNameFromURL) {
+  sessionStorage.setItem("userName", userNameFromURL); // 👈 store name
+}
 
   const email = sessionStorage.getItem("userEmail") || "atharv456pandey@gmail.com";
+  const name = sessionStorage.getItem("userName") || "Unknown User"; // 👈 fallback
   const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
 
   fetch(`${apiBase}/${email}`, {
