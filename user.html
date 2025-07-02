@@ -53,7 +53,7 @@
 }
 
   const email = sessionStorage.getItem("userEmail") || "atharv456pandey@gmail.com";
-  const name = sessionStorage.getItem("userName") || "Unknown User"; // 👈 fallback
+  const name = sessionStorage.getItem("userName") || " "; // 👈 fallback
   const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
 
   fetch(`${apiBase}/${email}`, {
