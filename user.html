@@ -36,6 +36,10 @@
 
 
   <script>
+    setInterval(() => {
+  window.location.reload(); // or call fetch API again manually
+}, 15000); // refresh every 15 sec
+
     const urlParams = new URLSearchParams(window.location.search);
 const userEmail = urlParams.get("email");
 if (userEmail) {
@@ -111,7 +115,7 @@ if (data.pastInterviews && data.pastInterviews.length > 0) {
   const scores = data.pastInterviews.map(i => i.score);
   const labels = data.pastInterviews.map(i => {
     const d = new Date(i.date);
-    return `${d.getDate()}/${d.getMonth() + 1}`; // Format: DD/MM
+    return `${d.getDate()}/${d.getMonth() + 1}`;
   });
 
   const ctx = document.getElementById('scoreChart').getContext('2d');
