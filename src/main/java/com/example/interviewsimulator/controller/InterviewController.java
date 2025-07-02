@@ -203,7 +203,8 @@ public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authenticati
     @GetMapping("/redirect-after-login")
 public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
     String email = token.getPrincipal().getAttribute("email");
-    response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview?email=" + email);
+    String name = token.getPrincipal().getAttribute("name");
+    response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview?email=" + email + "&name=" + name);
 
     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
     response.setHeader("Access-Control-Allow-Credentials", "true");
