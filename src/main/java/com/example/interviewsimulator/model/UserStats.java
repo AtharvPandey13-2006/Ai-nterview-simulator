@@ -22,10 +22,14 @@ public class UserStats {
     private List<InterviewRecord> pastInterviews;
 
     @Data
-    public static class InterviewRecord {
-        private String question;
-        private String answer;
-        private double score; // Out of 10
-        private String date;  // Optional: "2025-06-24"
-    }
+public static class InterviewRecord {
+    private String question;
+    private String answer;
+    private double score;
+    private List<String> strengths;
+    private List<String>  weaknesses;
+    private String feedback;
+    private long timestamp;
+    private String date;  // optional
+}
 }
