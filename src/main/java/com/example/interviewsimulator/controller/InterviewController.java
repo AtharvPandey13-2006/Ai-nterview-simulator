@@ -185,22 +185,30 @@ if (user != null) {
 
         return ResponseEntity.ok(response);
     }
+//     @GetMapping("/me")
+// public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authentication) {
+//     Map<String, String> map = new HashMap<>();
+//     String name = authentication.getPrincipal().getAttribute("name");
+//     String email = authentication.getPrincipal().getAttribute("email");
+//     map.put("name", name);
+//     map.put("email", email);
+//     return map;
+// }
 
-    // @GetMapping("/redirect-after-login")
-    // public void redirectAfterLogin(HttpServletResponse response) throws IOException {
-    //     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
-    //     response.setHeader("Access-Control-Allow-Credentials", "true");
-    //     response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview");
-    // }
-
-    @GetMapping("/me")
-public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authentication) {
-    Map<String, String> map = new HashMap<>();
-    String name = authentication.getPrincipal().getAttribute("name");
+@GetMapping("/me")
+public ResponseEntity<UserStats> getCurrentUserStats(OAuth2AuthenticationToken authentication) {
     String email = authentication.getPrincipal().getAttribute("email");
-    map.put("name", name);
-    map.put("email", email);
-    return map;
+    String name = authentication.getPrincipal().getAttribute("name");
+
+    UserStats stats = userStatsService.findByEmail(email);
+    if (stats == null) {
+        stats = new UserStats();
+        stats.setEmail(email);
+        stats.setName(name != null ? name : "Unknown");
+        stats = userStatsService.save(stats);
+    }
+
+    return ResponseEntity.ok(stats);
 }
 
 
