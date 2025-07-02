@@ -14,6 +14,24 @@ public class UserStatsController {
 
     @Autowired
     private UserStatsService service;
+    
+    
+    @GetMapping("/me")
+public ResponseEntity<UserStats> getCurrentUserStats(OAuth2AuthenticationToken authentication) {
+    String email = authentication.getPrincipal().getAttribute("email");
+    String name = authentication.getPrincipal().getAttribute("name");
+
+    UserStats stats = service.findByEmail(email);
+    if (stats == null) {
+        stats = new UserStats();
+        stats.setEmail(email);
+        stats.setName(name != null ? name : "Unknown");
+        stats = service.save(stats);
+    }
+
+    return ResponseEntity.ok(stats);
+}
+
 
     @GetMapping("/{email}")
 public ResponseEntity<UserStats> getStats(@PathVariable String email, OAuth2AuthenticationToken authentication) {
