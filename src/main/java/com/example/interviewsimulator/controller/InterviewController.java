@@ -208,6 +208,9 @@ public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authenticati
 public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
     String email = token.getPrincipal().getAttribute("email");
     String name = token.getPrincipal().getAttribute("name");
+    
+    System.out.println("OAuth Email: " + email); // ✅ Print to verify
+    System.out.println("OAuth Name: " + name);
      // URLEncode name to prevent issues with spaces
     String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
 
