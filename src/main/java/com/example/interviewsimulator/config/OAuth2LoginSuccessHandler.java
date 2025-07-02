@@ -33,6 +33,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         LoginInfo loginInfo = new LoginInfo(name, email, LocalDateTime.now());
         loginInfoRepository.save(loginInfo);
 
+        
+    // ✅ Store email & name in session
+    request.getSession().setAttribute("email", email);
+    request.getSession().setAttribute("name", name);
+
         // Redirect after saving login info
         response.sendRedirect("/api/interview/redirect-after-login");
     }
