@@ -14,8 +14,12 @@ import com.example.interviewsimulator.model.InterviewResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import com.example.interviewsimulator.model.User;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -204,7 +208,10 @@ public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authenticati
 public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
     String email = token.getPrincipal().getAttribute("email");
     String name = token.getPrincipal().getAttribute("name");
-    response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview?email=" + email + "&name=" + name);
+     // URLEncode name to prevent issues with spaces
+    String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+
+    response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview?email=" + email + "&name=" + encodedName);
 
     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
     response.setHeader("Access-Control-Allow-Credentials", "true");
