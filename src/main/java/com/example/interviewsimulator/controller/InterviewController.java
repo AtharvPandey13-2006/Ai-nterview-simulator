@@ -204,25 +204,52 @@ public Map<String, String> getCurrentUser(OAuth2AuthenticationToken authenticati
 }
 
 
-    @GetMapping("/redirect-after-login")
+//     @GetMapping("/redirect-after-login")
+// public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
+//     String email = token.getPrincipal().getAttribute("email");
+//     String name = token.getPrincipal().getAttribute("name");
+    
+//     System.out.println("OAuth Email: " + email); // ✅ Print to verify
+//     System.out.println("OAuth Name: " + name);
+//      // URLEncode name to prevent issues with spaces
+//     String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+
+//     response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview?email=" + email + "&name=" + encodedName);
+
+//     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
+//     response.setHeader("Access-Control-Allow-Credentials", "true");
+
+//     String html = "<!DOCTYPE html>" +
+//                   "<html><head><meta charset='UTF-8'><title>Redirecting...</title></head><body>" +
+//                   "<script>" +
+//                   "sessionStorage.setItem('userEmail', '" + email + "');" +
+//                   "window.location.href = 'https://golden-swan-a56b79.netlify.app/interview';" +
+//                   "</script>" +
+//                   "</body></html>";
+
+//     response.setContentType("text/html");
+//     response.getWriter().write(html);
+// }
+@GetMapping("/redirect-after-login")
 public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
     String email = token.getPrincipal().getAttribute("email");
     String name = token.getPrincipal().getAttribute("name");
-    
-    System.out.println("OAuth Email: " + email); // ✅ Print to verify
+
+    System.out.println("OAuth Email: " + email);
     System.out.println("OAuth Name: " + name);
-     // URLEncode name to prevent issues with spaces
+
     String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
 
-    response.sendRedirect("https://golden-swan-a56b79.netlify.app/interview?email=" + email + "&name=" + encodedName);
-
+    // Set CORS headers
     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
     response.setHeader("Access-Control-Allow-Credentials", "true");
 
+    // Send HTML with JS to store data in sessionStorage and redirect
     String html = "<!DOCTYPE html>" +
                   "<html><head><meta charset='UTF-8'><title>Redirecting...</title></head><body>" +
                   "<script>" +
                   "sessionStorage.setItem('userEmail', '" + email + "');" +
+                  "sessionStorage.setItem('userName', decodeURIComponent('" + encodedName + "'));" +
                   "window.location.href = 'https://golden-swan-a56b79.netlify.app/interview';" +
                   "</script>" +
                   "</body></html>";
