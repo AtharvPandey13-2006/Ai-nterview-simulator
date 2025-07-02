@@ -29,6 +29,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User user = (OAuth2User) authentication.getPrincipal();
         String name = user.getAttribute("name");
         String email = user.getAttribute("email");
+        
+    System.out.println("OAuth Email: " + email); // ✅ Print to verify
+    System.out.println("OAuth Name: " + name);
 
         LoginInfo loginInfo = new LoginInfo(name, email, LocalDateTime.now());
         loginInfoRepository.save(loginInfo);
