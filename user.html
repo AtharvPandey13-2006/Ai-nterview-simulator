@@ -41,40 +41,42 @@
     window.location.reload();
   }, 15000);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const userEmailFromURL = urlParams.get("email");
-  const userNameFromURL = urlParams.get("name");
-
-  if (userEmailFromURL) {
-    sessionStorage.setItem("userEmail", userEmailFromURL);
-  }
-  if (userNameFromURL) {
-  sessionStorage.setItem("userName", userNameFromURL); // 👈 store name
-}
-
-  const email = sessionStorage.getItem("userEmail") || "atharv456pandey@gmail.com";
-  const name = sessionStorage.getItem("userName") || " "; // 👈 fallback
   const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
 
-  fetch(`${apiBase}/${email}`, {
+  // Step 1: Fetch the current logged-in user's actual name & email
+  fetch(`${apiBase}/me`, {
     method: "GET",
     credentials: "include"
   })
     .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch user stats");
-      return res.text();
+      if (!res.ok) throw new Error("Failed to fetch current user");
+      return res.json();
     })
-    .then(text => {
-      if (!text) throw new Error("Empty response");
-      const data = JSON.parse(text);
+    .then(user => {
+      const { name, email } = user;
 
-      // Profile Section
+      // Store in sessionStorage for reuse if needed
+      sessionStorage.setItem("userName", name);
+      sessionStorage.setItem("userEmail", email);
+
+      // Step 2: Now fetch user stats using real email
+      return fetch(`${apiBase}/${email}`, {
+        method: "GET",
+        credentials: "include"
+      });
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch user stats");
+      return res.json();
+    })
+    .then(data => {
+      // ✅ Populate profile section
       document.getElementById("user-name").textContent = data.name || "N/A";
       document.getElementById("user-email").textContent = data.email || "N/A";
       document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
       document.getElementById("progress-bar").style.width = (data.progress || 0) + "%";
 
-      // Skills
+      // ✅ Populate skills section
       const skillContainer = document.getElementById("skills-container");
       skillContainer.innerHTML = "";
       if (data.skillLevels && Object.keys(data.skillLevels).length > 0) {
@@ -91,7 +93,7 @@
         skillContainer.textContent = "No skills recorded.";
       }
 
-      // Past Interviews
+      // ✅ Populate interview history
       const interviewList = document.getElementById("interviews-list");
       interviewList.innerHTML = "";
       if (data.pastInterviews && data.pastInterviews.length > 0) {
@@ -105,7 +107,7 @@
             </li>`;
         });
 
-        // ✅ Move Chart.js logic here, inside `.then()`
+        // ✅ Draw score chart using Chart.js
         const scores = reversed.map(i => i.score);
         const labels = reversed.map(i => {
           const d = new Date(i.date);
@@ -165,6 +167,7 @@
       console.error("Dashboard error:", err);
     });
 </script>
+
 
   <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
