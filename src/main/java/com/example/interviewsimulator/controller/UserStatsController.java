@@ -15,28 +15,31 @@ public class UserStatsController {
     @Autowired
     private UserStatsService service;
 
-    @GetMapping("/{email}")
-    public ResponseEntity<UserStats> getStats(@PathVariable String email, OAuth2AuthenticationToken authentication) {
-        UserStats stats = service.findByEmail(email);
-        if (stats == null) {
-             // Auto-create new user stats
+   @GetMapping("/{email}")
+@CrossOrigin(origins = {
+  "https://golden-swan-a56b79.netlify.app",
+  "https://atharvpandey13-2006.github.io",
+  "http://127.0.0.1:5501"
+}, allowCredentials = "true")
+public ResponseEntity<UserStats> getStats(@PathVariable String email, OAuth2AuthenticationToken authentication) {
+    UserStats stats = service.findByEmail(email);
+
+    if (stats == null) {
         stats = new UserStats();
         stats.setEmail(email);
-        stats.setName("Unknown User");
-        stats = service.save(stats);
 
-        if (stats == null) {
-    stats = new UserStats();
-    stats.setEmail(email);
-    String name = authentication.getPrincipal().getAttribute("name");
-    stats.setName(name != null ? name : "Unknown User");
-    stats = service.save(stats);
+        String name = (authentication != null && authentication.getPrincipal() != null)
+            ? authentication.getPrincipal().getAttribute("name")
+            : null;
+
+        stats.setName(name != null ? name : "Unknown User");
+
+        stats = service.save(stats);
+    }
+
+    return ResponseEntity.ok(stats);
 }
 
-            // return ResponseEntity.notFound().build(); // Return 404 if user not found
-        }
-        return ResponseEntity.ok(stats);
-    }
 
     @PostMapping("/")
     public ResponseEntity<UserStats> saveStats(@RequestBody UserStats stats) {
