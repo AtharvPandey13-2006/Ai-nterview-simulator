@@ -22,8 +22,6 @@ public class UserStatsController {
         if (stats == null) {
     stats = new UserStats();
     stats.setEmail(email);
-    String name = authentication.getPrincipal().getAttribute("name");
-    stats.setName(name != null ? name : "Unknown User");
     stats = service.save(stats);
 }
 
