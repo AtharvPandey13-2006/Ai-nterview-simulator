@@ -36,132 +36,131 @@
 
 
   <script>
-    setInterval(() => {
-  window.location.reload(); // or call fetch API again manually
-}, 15000); // refresh every 15 sec
+  // Refresh every 15 sec
+  setInterval(() => {
+    window.location.reload();
+  }, 15000);
 
-    const urlParams = new URLSearchParams(window.location.search);
-const userEmail = urlParams.get("email");
-if (userEmail) {
-  sessionStorage.setItem("userEmail", userEmail);
-}
+  const urlParams = new URLSearchParams(window.location.search);
+  const userEmailFromURL = urlParams.get("email");
 
-    // You can dynamically assign this using localStorage or sessionStorage after Google OAuth
-    const email = sessionStorage.getItem("userEmail") || "atharv456pandey@gmail.com"; 
-    const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
+  if (userEmailFromURL) {
+    sessionStorage.setItem("userEmail", userEmailFromURL);
+  }
 
-    fetch(`${apiBase}/${email}`, {
-  method: "GET",
-  credentials: "include"
-})
-  .then(res => {
-    if (!res.ok) throw new Error("Failed to fetch user stats");
-    return res.text();
+  const email = sessionStorage.getItem("userEmail") || "atharv456pandey@gmail.com";
+  const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
+
+  fetch(`${apiBase}/${email}`, {
+    method: "GET",
+    credentials: "include"
   })
-  .then(text => {
-    if (!text) throw new Error("Empty response");
-    const data = JSON.parse(text);
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch user stats");
+      return res.text();
+    })
+    .then(text => {
+      if (!text) throw new Error("Empty response");
+      const data = JSON.parse(text);
 
-      
-        document.getElementById("user-name").textContent = data.name || "N/A";
-        document.getElementById("user-email").textContent = data.email;
-        document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
-        document.getElementById("progress-bar").style.width = (data.progress || 0) + "%";
+      // Profile Section
+      document.getElementById("user-name").textContent = data.name || "N/A";
+      document.getElementById("user-email").textContent = data.email || "N/A";
+      document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
+      document.getElementById("progress-bar").style.width = (data.progress || 0) + "%";
 
-        // Skills
-        const skillContainer = document.getElementById("skills-container");
-        skillContainer.innerHTML = "";
-        if (data.skillLevels && Object.keys(data.skillLevels).length > 0) {
-          Object.entries(data.skillLevels).forEach(([skill, level]) => {
-            skillContainer.innerHTML += `
-              <div class="mb-2">
-                <span class="font-medium">${skill}</span>
-                <div class="w-full bg-gray-200 h-3 rounded">
-                  <div class="bg-green-500 h-3 rounded" style="width: ${level}%"></div>
-                </div>
-              </div>`;
-          });
-        } else {
-          skillContainer.textContent = "No skills recorded.";
-        }
-
-        // Past interviews
-        const interviewList = document.getElementById("interviews-list");
-        interviewList.innerHTML = "";
-        if (data.pastInterviews && data.pastInterviews.length > 0) {
-          data.pastInterviews.reverse().forEach((intv, idx) => {
-            interviewList.innerHTML += `
-              <li class="bg-gray-50 p-4 rounded shadow-sm">
-                <p><strong>Q:</strong> ${intv.question}</p>
-                <p><strong>A:</strong> ${intv.answer}</p>
-                <p><strong>Score:</strong> ${intv.score}/10 | <strong>Date:</strong> ${intv.date}</p>
-              </li>`;
-          });
-        } else {
-          interviewList.innerHTML = "<li>No past interviews found.</li>";
-        }
-      })
-      .catch(err => {
-        document.getElementById("user-name").textContent = "Error loading user";
-        document.getElementById("skills-container").textContent = "Failed to load skills.";
-        document.getElementById("interviews-list").textContent = "Failed to load interviews.";
-        console.error(err);
-      });
-
-  
-
-    // Prepare data for Chart.js
-if (data.pastInterviews && data.pastInterviews.length > 0) {
-  const scores = data.pastInterviews.map(i => i.score);
-  const labels = data.pastInterviews.map(i => {
-    const d = new Date(i.date);
-    return `${d.getDate()}/${d.getMonth() + 1}`;
-  });
-
-  const ctx = document.getElementById('scoreChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Interview Score',
-        data: scores,
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          suggestedMin: 0,
-          suggestedMax: 10,
-          title: {
-            display: true,
-            text: 'Score (out of 10)'
-          }
-        },
-        x: {
-          title: {
-            display: true,
-            text: 'Date'
-          }
-        }
-      },
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top'
-        }
+      // Skills
+      const skillContainer = document.getElementById("skills-container");
+      skillContainer.innerHTML = "";
+      if (data.skillLevels && Object.keys(data.skillLevels).length > 0) {
+        Object.entries(data.skillLevels).forEach(([skill, level]) => {
+          skillContainer.innerHTML += `
+            <div class="mb-2">
+              <span class="font-medium">${skill}</span>
+              <div class="w-full bg-gray-200 h-3 rounded">
+                <div class="bg-green-500 h-3 rounded" style="width: ${level}%"></div>
+              </div>
+            </div>`;
+        });
+      } else {
+        skillContainer.textContent = "No skills recorded.";
       }
-    }
-  });
-}
 
-  </script>
+      // Past Interviews
+      const interviewList = document.getElementById("interviews-list");
+      interviewList.innerHTML = "";
+      if (data.pastInterviews && data.pastInterviews.length > 0) {
+        const reversed = [...data.pastInterviews].reverse();
+        reversed.forEach(intv => {
+          interviewList.innerHTML += `
+            <li class="bg-gray-50 p-4 rounded shadow-sm">
+              <p><strong>Q:</strong> ${intv.question}</p>
+              <p><strong>A:</strong> ${intv.answer}</p>
+              <p><strong>Score:</strong> ${intv.score}/10 | <strong>Date:</strong> ${intv.date}</p>
+            </li>`;
+        });
+
+        // ✅ Move Chart.js logic here, inside `.then()`
+        const scores = reversed.map(i => i.score);
+        const labels = reversed.map(i => {
+          const d = new Date(i.date);
+          return `${d.getDate()}/${d.getMonth() + 1}`;
+        });
+
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Interview Score',
+              data: scores,
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                suggestedMin: 0,
+                suggestedMax: 10,
+                title: {
+                  display: true,
+                  text: 'Score (out of 10)'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Date'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top'
+              }
+            }
+          }
+        });
+
+      } else {
+        interviewList.innerHTML = "<li>No past interviews found.</li>";
+      }
+    })
+    .catch(err => {
+      document.getElementById("user-name").textContent = "Error loading user";
+      document.getElementById("skills-container").textContent = "Failed to load skills.";
+      document.getElementById("interviews-list").textContent = "Failed to load interviews.";
+      console.error("Dashboard error:", err);
+    });
+</script>
+
   <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
