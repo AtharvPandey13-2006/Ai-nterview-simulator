@@ -131,10 +131,10 @@ if (user != null) {
     record.setQuestion(request.getQuestion());
     record.setAnswer(request.getAnswer());
     record.setScore(geminiResponse.getScore());
-    // record.setStrengths(geminiResponse.getStrengths());
-    // record.setWeaknesses(geminiResponse.getWeaknesses());
-    // record.setFeedback(geminiResponse.getFeedback());
-    // record.setTimestamp(System.currentTimeMillis());
+    record.setStrengths(geminiResponse.getStrengths());
+    record.setWeaknesses(geminiResponse.getWeaknesses());
+    record.setFeedback(geminiResponse.getFeedback());
+    record.setTimestamp(System.currentTimeMillis());
 
    userStatsService.updateInterviewStats(user.getEmail(), record);
 
