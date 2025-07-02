@@ -16,11 +16,6 @@ public class UserStatsController {
     private UserStatsService service;
 
    @GetMapping("/{email}")
-@CrossOrigin(origins = {
-  "https://golden-swan-a56b79.netlify.app",
-  "https://atharvpandey13-2006.github.io",
-  "http://127.0.0.1:5501"
-}, allowCredentials = "true")
 public ResponseEntity<UserStats> getStats(@PathVariable String email, OAuth2AuthenticationToken authentication) {
     UserStats stats = service.findByEmail(email);
 
