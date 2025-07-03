@@ -33,30 +33,42 @@
       🚀 AI Interview Simulator
     </div>
 
-    <!-- Dropdown Component -->
-    <div class="relative group">
-      <button id="userDropdownBtn" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full transition-all duration-300 focus:outline-none">
-        👤 User
-        <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+    <<!-- Wrapper must be relative to allow absolute dropdown -->
+<div class="relative inline-block text-left">
+  <!-- Button to toggle dropdown -->
+  <button onclick="toggleDropdown()" class="bg-blue-600 text-white px-4 py-2 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">
+    👤 User
+  </button>
 
-      <!-- Dropdown Menu -->
-      <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 z-50">
-        <a href="user.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
-          <span>📊</span> Dashboard
-        </a>
-        <!-- <a href="settings.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
-          <span>⚙️</span> Settings
-        </a>
-        <a href="logout.html" class="block px-5 py-3 hover:bg-gray-100 text-red-600 flex items-center gap-2">
-          <span>🚪</span> Logout
-        </a> -->
-      </div>
-    </div>
+  <!-- Dropdown Menu -->
+  <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 z-50">
+    <a href="user.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+      <span>📊</span> Dashboard
+    </a>
+    <a href="settings.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+      <span>⚙️</span> Settings
+    </a>
+    <a href="logout" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+      <span>🚪</span> Logout
+    </a>
   </div>
 </div>
+
+<script>
+  function toggleDropdown() {
+    const menu = document.getElementById("userDropdownMenu");
+    menu.classList.toggle("hidden");
+  }
+
+  // Optional: Close dropdown when clicking outside
+  document.addEventListener('click', function (event) {
+    const isClickInside = event.target.closest('#userDropdownMenu') || event.target.closest('button');
+    if (!isClickInside) {
+      document.getElementById('userDropdownMenu').classList.add('hidden');
+    }
+  });
+</script>
+
 
 
 <!-- Hero Section -->
@@ -79,7 +91,7 @@
   <div id="root" class="relative z-10 w-full max-w-4xl mx-auto px-4 mb-10"></div>
 
   <!-- React App -->
-  <script type="text/babel" src="main.js"></script>
+  <script type="text/babel" src="main.js" defer></script>
   <script>
   const userBtn = document.getElementById('userDropdownBtn');
   const userMenu = document.getElementById('userDropdownMenu');
