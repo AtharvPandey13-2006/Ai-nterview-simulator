@@ -26,15 +26,48 @@
     <div>📍 India | 🌐 AI Mock Interview Platform</div>
     <div>📞 Contact: +91-9876543210</div>
   </div>
+<!-- User Navigation Dropdown -->
+<div class="relative z-10 px-6 py-4 bg-gray-950 bg-opacity-90 shadow-md">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <div class="text-xl font-bold text-yellow-400">
+      🚀 AI Interview Simulator
+    </div>
 
-  <!-- Hero Section -->
-  <section class="relative z-10 px-6 py-24 text-center max-w-5xl mx-auto">
+    <!-- Dropdown Component -->
+    <div class="relative group">
+      <button id="userDropdownBtn" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full transition-all duration-300 focus:outline-none">
+        👤 User
+        <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 z-50">
+        <a href="user.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+          <span>📊</span> Dashboard
+        </a>
+        <!-- <a href="settings.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+          <span>⚙️</span> Settings
+        </a>
+        <a href="logout.html" class="block px-5 py-3 hover:bg-gray-100 text-red-600 flex items-center gap-2">
+          <span>🚪</span> Logout
+        </a> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Hero Section -->
+<section class="relative z-10 px-6 py-24 text-center max-w-5xl mx-auto">
+
     <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-xl">
       Welcome to <span class="text-yellow-400">AI Interview Simulator</span>
     </h1>
-   <button onclick="window.location.href='user.html'" class="bg-blue-500 text-white px-4 py-2 rounded" color="text-white">
+   <!-- <button onclick="window.location.href='user.html'" class="bg-blue-500 text-white px-4 py-2 rounded" color="text-white">
   User
-</button>
+</button> -->
 
     <p class="mt-4 text-lg text-gray-200 font-medium">
       Practice DSA, System Design & HR Interviews — Powered by AI 🚀
@@ -47,5 +80,19 @@
 
   <!-- React App -->
   <script type="text/babel" src="main.js"></script>
+  <script>
+  const userBtn = document.getElementById('userDropdownBtn');
+  const userMenu = document.getElementById('userDropdownMenu');
+
+  userBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userMenu.classList.toggle('hidden');
+  });
+
+  window.addEventListener('click', () => {
+    userMenu.classList.add('hidden');
+  });
+</script>
+
 </body>
 </html>
