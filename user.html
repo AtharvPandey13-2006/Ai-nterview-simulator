@@ -110,8 +110,8 @@
         // ✅ Draw score chart using Chart.js
         const scores = reversed.map(i => i.score);
         const labels = reversed.map(i => {
-          const d = new Date(i.date);
-          return `${d.getDate()}/${d.getMonth() + 1}`;
+          const d = new Date(i.timestamp || Date.now());
+          return d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' });
         });
 
         const ctx = document.getElementById('scoreChart').getContext('2d');
