@@ -6,177 +6,213 @@
   <title>User Dashboard | Interview Trainer</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-5xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-4 text-center">👤 User Dashboard</h1>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white min-h-screen">
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-4xl font-extrabold text-yellow-400 text-center mb-8 shadow-md">👤 Welcome to Your Interview Dashboard</h1>
 
     <!-- Profile Info -->
-    <div class="bg-white rounded-xl shadow p-6 mb-6">
-      <h2 class="text-xl font-semibold mb-2">Profile</h2>
-      <p><strong>Name:</strong> <span id="user-name">Loading...</span></p>
-      <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
-      <p><strong>Avg. Response Time:</strong> <span id="user-response-time">--</span> sec</p>
-      <p><strong>Progress:</strong></p>
-      <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
-        <div id="progress-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+    <div class="bg-white text-gray-900 rounded-2xl shadow-2xl p-6 mb-6">
+      <h2 class="text-2xl font-semibold mb-4">🧾 Profile Overview</h2>
+      <p class="text-lg"><strong>Name:</strong> <span id="user-name" class="font-medium text-blue-700">Loading...</span></p>
+      <p class="text-lg"><strong>Email:</strong> <span id="user-email" class="font-medium text-blue-700">Loading...</span></p>
+      <p class="text-lg"><strong>Avg. Response Time:</strong> <span id="user-response-time">--</span> sec</p>
+
+      <p class="mt-4 text-lg font-semibold">Progress:</p>
+      <div class="w-full bg-gray-200 rounded-full h-5 mt-2 shadow-inner">
+        <div id="progress-bar" class="bg-blue-600 h-5 rounded-full transition-all duration-300 ease-out text-right text-xs pr-2 text-white font-bold" style="width: 0%">0%</div>
       </div>
     </div>
 
     <!-- Skills Chart -->
-    <div class="bg-white rounded-xl shadow p-6 mb-6">
-      <h2 class="text-xl font-semibold mb-4">Skill Levels</h2>
-      <div id="skills-container">Loading skills...</div>
+    <div class="bg-white text-gray-900 rounded-2xl shadow-2xl p-6 mb-6">
+      <h2 class="text-2xl font-semibold mb-4">🧠 Skill Mastery</h2>
+      <div id="skills-container" class="text-base">Loading skills...</div>
     </div>
 
     <!-- Past Interviews -->
-    <div class="bg-white rounded-xl shadow p-6 mb-6">
-      <h2 class="text-xl font-semibold mb-4">📜 Past Interviews Score</h2>
-      <ul id="interviews-list" class="space-y-2 text-sm">Loading interview records...</ul>
+    <div class="bg-white text-gray-900 rounded-2xl shadow-2xl p-6 mb-6">
+      <h2 class="text-2xl font-semibold mb-4">📜 Past Interview Records</h2>
+      <ul id="interviews-list" class="space-y-4 text-sm">Loading interview records...</ul>
     </div>
 
+    <!-- Score Chart -->
+    <div class="bg-white text-gray-900 rounded-2xl shadow-2xl p-6 mb-6">
+      <h2 class="text-2xl font-semibold mb-4">📊 Score Progress Over Time</h2>
+      <canvas id="scoreChart" height="100"></canvas>
+    </div>
 
-  <script>
-  // Refresh every 15 sec
-  setInterval(() => {
-    window.location.reload();
-  }, 15000);
-
-  const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
-
-  // Step 1: Fetch the current logged-in user's actual name & email
-  fetch(`${apiBase}/me`, {
-    method: "GET",
-    credentials: "include"
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch current user");
-      return res.json();
-    })
-    .then(user => {
-      const { name, email } = user;
-
-      // Store in sessionStorage for reuse if needed
-      sessionStorage.setItem("userName", name);
-      sessionStorage.setItem("userEmail", email);
-
-      // Step 2: Now fetch user stats using real email
-      return fetch(`${apiBase}/${email}`, {
-        method: "GET",
-        credentials: "include"
-      });
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch user stats");
-      return res.json();
-    })
-    .then(data => {
-      // ✅ Populate profile section
-      document.getElementById("user-name").textContent = data.name || "N/A";
-      document.getElementById("user-email").textContent = data.email || "N/A";
-      document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
-      document.getElementById("progress-bar").style.width = (data.progress || 0) + "%";
-
-      // ✅ Populate skills section
-      const skillContainer = document.getElementById("skills-container");
-      skillContainer.innerHTML = "";
-      if (data.skillLevels && Object.keys(data.skillLevels).length > 0) {
-        Object.entries(data.skillLevels).forEach(([skill, level]) => {
-          skillContainer.innerHTML += `
-            <div class="mb-2">
-              <span class="font-medium">${skill}</span>
-              <div class="w-full bg-gray-200 h-3 rounded">
-                <div class="bg-green-500 h-3 rounded" style="width: ${level}%"></div>
-              </div>
-            </div>`;
-        });
-      } else {
-        skillContainer.textContent = "No skills recorded.";
-      }
-
-      // ✅ Populate interview history
-      const interviewList = document.getElementById("interviews-list");
-      interviewList.innerHTML = "";
-      if (data.pastInterviews && data.pastInterviews.length > 0) {
-        const reversed = [...data.pastInterviews].reverse();
-        reversed.forEach(intv => {
-          interviewList.innerHTML += `
-            <li class="bg-gray-50 p-4 rounded shadow-sm">
-              <p><strong>Q:</strong> ${intv.question}</p>
-              <p><strong>A:</strong> ${intv.answer}</p>
-              <p><strong>Score:</strong> ${intv.score}/10 | <strong>Date:</strong> ${intv.date}</p>
-            </li>`;
-        });
-
-        // ✅ Draw score chart using Chart.js
-        const scores = reversed.map(i => i.score);
-        const labels = reversed.map(i => {
-          const d = new Date(i.timestamp || Date.now());
-          return d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' });
-        });
-
-        const ctx = document.getElementById('scoreChart').getContext('2d');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels,
-            datasets: [{
-              label: 'Interview Score',
-              data: scores,
-              borderColor: '#3b82f6',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fill: true,
-              tension: 0.3,
-              pointRadius: 5,
-              pointHoverRadius: 7,
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                suggestedMin: 0,
-                suggestedMax: 10,
-                title: {
-                  display: true,
-                  text: 'Score (out of 10)'
-                }
-              },
-              x: {
-                title: {
-                  display: true,
-                  text: 'Date'
-                }
-              }
-            },
-            plugins: {
-              legend: {
-                display: true,
-                position: 'top'
-              }
-            }
-          }
-        });
-
-      } else {
-        interviewList.innerHTML = "<li>No past interviews found.</li>";
-      }
-    })
-    .catch(err => {
-      document.getElementById("user-name").textContent = "Error loading user";
-      document.getElementById("skills-container").textContent = "Failed to load skills.";
-      document.getElementById("interviews-list").textContent = "Failed to load interviews.";
-      console.error("Dashboard error:", err);
-    });
-</script>
-
+    <!-- Skill Distribution Chart -->
+    <div class="bg-white text-gray-900 rounded-2xl shadow-2xl p-6 mb-6">
+      <h2 class="text-2xl font-semibold mb-4">📈 Skill Level Distribution</h2>
+      <canvas id="skillChart" height="100"></canvas>
+    </div>
+  </div>
 
   <!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Score Chart -->
-<div class="bg-white rounded-xl shadow p-6 mb-6">
-  <h2 class="text-xl font-semibold mb-4">📊 Score Progress Over Time</h2>
-  <canvas id="scoreChart" height="100"></canvas>
-</div>
+  <script>
+    // Refresh every 15 sec
+    setInterval(() => window.location.reload(), 15000);
 
+    const apiBase = "https://atharvpandey13-2006-github-io-interview-1-kq9g.onrender.com/api/user";
+
+    fetch(`${apiBase}/me`, {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch current user");
+        return res.json();
+      })
+      .then(user => {
+        const { name, email } = user;
+
+        sessionStorage.setItem("userName", name);
+        sessionStorage.setItem("userEmail", email);
+
+        return fetch(`${apiBase}/${email}`, {
+          method: "GET",
+          credentials: "include"
+        });
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch user stats");
+        return res.json();
+      })
+      .then(data => {
+        // Profile Info
+        document.getElementById("user-name").textContent = data.name || "N/A";
+        document.getElementById("user-email").textContent = data.email || "N/A";
+        document.getElementById("user-response-time").textContent = data.avgResponseTime || 0;
+
+        const progressBar = document.getElementById("progress-bar");
+        const progressValue = data.progress || 0;
+        progressBar.style.width = progressValue + "%";
+        progressBar.textContent = progressValue + "%";
+
+        // Skills Display
+        const skillContainer = document.getElementById("skills-container");
+        skillContainer.innerHTML = "";
+        if (data.skillLevels && Object.keys(data.skillLevels).length > 0) {
+          Object.entries(data.skillLevels).forEach(([skill, level]) => {
+            skillContainer.innerHTML += `
+              <div class="mb-2">
+                <span class="font-medium">${skill}</span>
+                <div class="w-full bg-gray-200 h-3 rounded">
+                  <div class="bg-green-500 h-3 rounded" style="width: ${level}%"></div>
+                </div>
+              </div>`;
+          });
+
+          // Skill Chart
+          const ctx2 = document.getElementById('skillChart').getContext('2d');
+          new Chart(ctx2, {
+            type: 'bar',
+            data: {
+              labels: Object.keys(data.skillLevels),
+              datasets: [{
+                label: 'Skill Level (%)',
+                data: Object.values(data.skillLevels),
+                backgroundColor: '#10b981',
+                borderRadius: 5
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  suggestedMin: 0,
+                  suggestedMax: 100,
+                  title: {
+                    display: true,
+                    text: 'Proficiency (%)'
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Skills'
+                  }
+                }
+              },
+              plugins: {
+                legend: { display: false }
+              }
+            }
+          });
+        } else {
+          skillContainer.textContent = "No skills recorded.";
+        }
+
+        // Past Interviews
+        const interviewList = document.getElementById("interviews-list");
+        interviewList.innerHTML = "";
+        if (data.pastInterviews && data.pastInterviews.length > 0) {
+          const reversed = [...data.pastInterviews].reverse();
+          reversed.forEach(intv => {
+            interviewList.innerHTML += `
+              <li class="bg-gray-50 p-4 rounded shadow-sm">
+                <p><strong>Q:</strong> ${intv.question}</p>
+                <p><strong>A:</strong> ${intv.answer}</p>
+                <p><strong>Score:</strong> ${intv.score}/10 | <strong>Date:</strong> ${intv.date}</p>
+              </li>`;
+          });
+
+          const scores = reversed.map(i => i.score);
+          const labels = reversed.map(i => {
+            const d = new Date(i.timestamp || Date.now());
+            return d.toLocaleDateString("en-IN", { day: '2-digit', month: 'short' });
+          });
+
+          const ctx = document.getElementById('scoreChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: 'Interview Score',
+                data: scores,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 5,
+                pointHoverRadius: 7
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  suggestedMin: 0,
+                  suggestedMax: 10,
+                  title: {
+                    display: true,
+                    text: 'Score (out of 10)'
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Date'
+                  }
+                }
+              },
+              plugins: {
+                legend: { display: true, position: 'top' }
+              }
+            }
+          });
+
+        } else {
+          interviewList.innerHTML = "<li>No past interviews found.</li>";
+        }
+      })
+      .catch(err => {
+        document.getElementById("user-name").textContent = "Error loading user";
+        document.getElementById("skills-container").textContent = "Failed to load skills.";
+        document.getElementById("interviews-list").textContent = "Failed to load interviews.";
+        console.error("Dashboard error:", err);
+      });
+  </script>
 </body>
 </html>
