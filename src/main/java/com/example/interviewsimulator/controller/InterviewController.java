@@ -138,7 +138,8 @@ if (user != null) {
     record.setStrengths(geminiResponse.getStrengths());
     record.setWeaknesses(geminiResponse.getWeaknesses());
     record.setFeedback(geminiResponse.getFeedback());
-    record.setTimestamp(System.currentTimeMillis());
+   record.setTimestamp(System.currentTimeMillis()); // ✅ required
+record.setDate(java.time.LocalDate.now().toString()); // ✅ optional (format: "2025-07-02")
 
    userStatsService.updateInterviewStats(user.getEmail(), record);
 
