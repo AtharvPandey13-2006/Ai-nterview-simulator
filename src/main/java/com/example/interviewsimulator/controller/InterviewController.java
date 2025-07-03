@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.interviewsimulator.repository.InterviewResponseRepository;
 import com.example.interviewsimulator.model.InterviewResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import com.example.interviewsimulator.model.User;
@@ -240,7 +241,7 @@ public ResponseEntity<UserStats> getCurrentUserStats(OAuth2AuthenticationToken a
 //     response.getWriter().write(html);
 // }
 @GetMapping("/redirect-after-login")
-public void redirectAfterLogin(HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
+public void redirectAfterLogin(HttpServletRequest request,HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
     String email = token.getPrincipal().getAttribute("email");
     String name = token.getPrincipal().getAttribute("name");
 
@@ -248,6 +249,15 @@ public void redirectAfterLogin(HttpServletResponse response, OAuth2Authenticatio
     System.out.println("OAuth Name: " + name);
 
     String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+
+    
+    // ✅ Store user in session
+    HttpSession session = request.getSession();
+    User user = new User();
+    user.setEmail(email);
+    user.setName(name);
+    session.setAttribute("user", user); // Fixes 'anonymous' issue
+
 
     // Set CORS headers
     response.setHeader("Access-Control-Allow-Origin", "https://golden-swan-a56b79.netlify.app");
