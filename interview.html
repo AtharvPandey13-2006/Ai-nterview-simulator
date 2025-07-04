@@ -15,96 +15,72 @@
 </head>
 <body class="bg-gray-100 min-h-screen overflow-x-hidden">
 
-  <!-- Background Image with Overlay -->
+  <!-- Background Image -->
   <div class="fixed inset-0 z-0">
     <img src="image.png" alt="Background" class="w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
   </div>
 
-  <!-- Top Bar -->
-  <div class="relative z-10 bg-indigo-900 bg-opacity-90 text-white text-sm py-2 px-4 flex justify-between items-center shadow">
-    <div>📍 India | 🌐 AI Mock Interview Platform</div>
-    <div>📞 Contact: +91-9876543210</div>
-  </div>
-<!-- User Navigation Dropdown -->
-<div class="relative z-10 px-6 py-4 bg-gray-950 bg-opacity-90 shadow-md">
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <div class="text-xl font-bold text-yellow-400">
-      🚀 AI Interview Simulator
+  <!-- Topbar -->
+  <div class="relative z-10">
+    <div class="bg-indigo-900 bg-opacity-90 text-white text-sm py-2 px-4 flex justify-between items-center shadow">
+      <div>📍 India | 🌐 AI Mock Interview Platform</div>
+      <div>📞 Contact: +91-9876543210</div>
     </div>
 
-    <<!-- Wrapper must be relative to allow absolute dropdown -->
-<div class="relative inline-block text-left">
-  <!-- Button to toggle dropdown -->
-  <button onclick="toggleDropdown()" class="bg-blue-600 text-white px-4 py-2 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">
-    👤 User
-  </button>
+    <!-- Navbar -->
+    <div class="bg-gray-950 bg-opacity-90 py-4 px-6 shadow-md flex justify-between items-center">
+      <div class="text-xl font-bold text-yellow-400">🚀 AI Interview Simulator</div>
 
-  <!-- Dropdown Menu -->
-  <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 z-50">
-    <a href="user.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
-      <span>📊</span> Dashboard
-    </a>
-    <a href="settings.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
-      <span>⚙️</span> Settings
-    </a>
-    <a href="logout" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
-      <span>🚪</span> Logout
-    </a>
+      <!-- User Dropdown -->
+      <div class="relative inline-block">
+        <button id="userDropdownBtn" class="bg-blue-600 text-white px-4 py-2 rounded shadow">
+          👤 User ▾
+        </button>
+        <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 z-50">
+          <a href="user.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+            <span>📊</span> Dashboard
+          </a>
+          <a href="settings.html" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+            <span>⚙️</span> Settings
+          </a>
+          <a href="logout" class="block px-5 py-3 hover:bg-gray-100 flex items-center gap-2">
+            <span>🚪</span> Logout
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<script>
-  function toggleDropdown() {
-    const menu = document.getElementById("userDropdownMenu");
-    menu.classList.toggle("hidden");
-  }
-
-  // Optional: Close dropdown when clicking outside
-  document.addEventListener('click', function (event) {
-    const isClickInside = event.target.closest('#userDropdownMenu') || event.target.closest('button');
-    if (!isClickInside) {
-      document.getElementById('userDropdownMenu').classList.add('hidden');
-    }
-  });
-</script>
-
-
-
-<!-- Hero Section -->
-<section class="relative z-10 px-6 py-24 text-center max-w-5xl mx-auto">
-
+  <!-- Hero Section -->
+  <section class="relative z-10 px-6 py-24 text-center max-w-5xl mx-auto">
     <h1 class="text-4xl md:text-5xl font-extrabold text-white drop-shadow-xl">
       Welcome to <span class="text-yellow-400">AI Interview Simulator</span>
     </h1>
-   <!-- <button onclick="window.location.href='user.html'" class="bg-blue-500 text-white px-4 py-2 rounded" color="text-white">
-  User
-</button> -->
-
     <p class="mt-4 text-lg text-gray-200 font-medium">
       Practice DSA, System Design & HR Interviews — Powered by AI 🚀
     </p>
-
   </section>
 
-  <!-- React Root Mount -->
+  <!-- React Root -->
   <div id="root" class="relative z-10 w-full max-w-4xl mx-auto px-4 mb-10"></div>
 
   <!-- React App -->
   <script type="text/babel" src="main.js" defer></script>
+
+  <!-- Dropdown Logic -->
   <script>
-  const userBtn = document.getElementById('userDropdownBtn');
-  const userMenu = document.getElementById('userDropdownMenu');
+    const btn = document.getElementById('userDropdownBtn');
+    const menu = document.getElementById('userDropdownMenu');
 
-  userBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    userMenu.classList.toggle('hidden');
-  });
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.classList.toggle('hidden');
+    });
 
-  window.addEventListener('click', () => {
-    userMenu.classList.add('hidden');
-  });
-</script>
-
+    window.addEventListener('click', () => {
+      menu.classList.add('hidden');
+    });
+  </script>
 </body>
 </html>
